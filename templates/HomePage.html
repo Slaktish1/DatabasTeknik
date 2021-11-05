@@ -1,25 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Flask app</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  </head>
-  <body>
-    <header>  
-      <div class="container">
-        <h1 class="logo">Ardit's web app</h1>
-        <strong><nav>
-          <ul class="menu">
-            <li> <a href= "{{ url_for('home') }}" > Shop </li>
-          </ul>
-        </nav></strong>
+<head>
+  <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+  <title></title>
+</head>
+<body>
+  <div class="header"> 
+    <div class="innerheader">
+      <div class="logoContainer">
+        <a href= "{{ url_for('HomePage') }}" ><img src="static/img/Logo.png" alt="logo"></li>
       </div>
-    </header>
-    <div class ="Background">
+
+      <ul class="navigation">
+        <a><li>About</li></a>
+        <a><li><img src="static/img/avatar.png" alt="avatar"></li></a>
+        <a><li><img src="static/img/ShoppingCart.png" alt="cart"></li></a>
+      </ul>
     </div>
-    <div class="container">
-      {% block content %}
-      {% endblock %}
+  </div>
+  <div class="content">  
+    <div class="contentsbox">
+      <div class="innerbox">
+        <ul class ="shoppingitems"> 
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+          <a>this is an item </a>
+        </ul>
+      </div>
     </div>
-  </body>
+</div>
+</body>
 </html>
