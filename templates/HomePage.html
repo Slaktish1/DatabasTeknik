@@ -1,38 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>SuperShop | You are what you buy</title>
   <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-  <title></title>
 </head>
-<body>
-  <div class="header"> 
-    <div class="innerheader">
-      <div class="logoContainer">
-        <a href= "{{ url_for('HomePage') }}" ><img src="static/img/Logo.png" alt="logo"></li>
-      </div>
 
-      <ul class="navigation">
-        <a><li>About</li></a>
-        <a><li><img src="static/img/avatar.png" alt="avatar"></li></a>
-        <a><li><img src="static/img/ShoppingCart.png" alt="cart"></li></a>
-      </ul>
+<body>
+  <!--- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="navbar"> 
+        <div class="logo">
+          <a href= "{{ url_for('HomePage') }}" >
+            <img src="static/img/Logo.png">
+          </a>
+        </div>
+    
+        <nav>
+          <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="">Products</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Contact</a></li>
+            <li><a href="">Account</a></li>
+          </ul>
+        </nav>
+        <a href=""> <img src="static/img/ShoppingCart.png" width="35px" height="35px"</a>
+      </div>
+    </div>
+  
+  <div class="row">
+    <div class="col-2">
+      <h1>Being an athlete <br> is all about winning.</h1>
+      <p>In order to win, you need a lot of talent and skill. <br> But most important is having the best equipment.</p>
+      <a href="" class="btn">Explore our sports section</a>
+    </div>
+    <div class="col-2">
+      <img src="/static/img/frontpage.png">
     </div>
   </div>
-  <div class="content">  
-    <div class="contentsbox">
-      <div class="innerbox">
-        <ul class ="shoppingitems"> 
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-          <a>this is an item </a>
-        </ul>
+</div>
+
+<!--- Featured categories --->
+<div class="categories">
+  <div class="small-container">
+    <div class="row">
+      <div class="col-3">
+        <img src= "static/img/cat_ski.jpg">
+      </div>
+      <div class="col-3">
+        <img src= "static/img/cat_soccer.jpg">
+      </div>
+      <div class="col-3">
+        <img src= "static/img/cat_shoes.jpg">
       </div>
     </div>
+  </div>
+</div>
+
+<!--- Featured products -->
+
+<div class="smallcontainer">
+  <h2>Featured Products</h2>
+  <div class="row">
+    <div class="col4"> 
+      <img src="static/img/ts_black.jpg">
+      <h4>Product Description</h4>
+      <div class="rating">
+      </div>
+      <div class="rating">
+      </div>
+      <div class="rating">
+      </div>
+      <p>Price of product</p>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
