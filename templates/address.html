@@ -35,8 +35,17 @@ Register
 
 <!-- Account page -->
 
-<div class="login">
-  <div class="regcontainer">
+<div class="small-container">
+  <div class="row">
+    <div class="col-4">
+      <h2> Current Account Information</h2>
+      <p> Logged in as: {{ Name }} </p>
+      <p> Current street: {{ Street }} </p>
+      <p> Curent city: {{ City }} </p>
+      <p> Current country: {{ Country }} </p> 
+      <button class='btn2'><a href="{{ url_for('logout') }}"> Sign Out </a></button>
+    </div>
+    <div class="col-4"> 
       <form class="form-signin" method="POST" action="/address">
           <h2 class="form-signin-heading">Update Account Information</h2>
           {{ form.hidden_tag() }}
@@ -45,6 +54,7 @@ Register
           {{ wtf.form_field(form.Country) }}
           <button class='btn' type="submit">Update</button>
       </form>
+    </div>
   </div>
 </div>
 

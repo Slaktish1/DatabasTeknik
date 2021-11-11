@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, session
+from flask import Flask, render_template, redirect, url_for, session, flash
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -12,6 +12,7 @@ app.config['SECRET_KEY'] = '\x13\xb2\xe4E\x0e\x03\x9da\x98\x8dg k\xa5\xa3\n\xf5!
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:LTU2021@51.38.126.58/maindb'
 Bootstrap(app)
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -79,21 +80,24 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-   if(session["username"]):
-      return redirect(url_for('address'))
    
    form = LoginForm()
 
-   if form.validate_on_submit():
-      user = UserInformation.query.filter_by(dbname=form.username.data).first()
-      if user:
-         if check_password_hash(user.dbPw, form.password.data):
-            login_user(user, remember=form.remember.data)
-            session['username'] = user.id
-            return redirect(url_for('HomePage'))
-
-      return '<h1> Error: Account with these credentials does not exist </h1>'
-   return render_template('login.html', form=form)
+   try:
+      if session['username']:
+         return redirect(url_for('address'))
+      
+   except KeyError:
+      if form.validate_on_submit():
+         user = UserInformation.query.filter_by(dbname=form.username.data).first()
+         if user:
+            if check_password_hash(user.dbPw, form.password.data):
+               login_user(user, remember=form.remember.data)
+               session['username'] = user.id
+               return redirect(url_for('HomePage'))
+      
+      return render_template('login.html', form=form)
+   
 
 @app.route('/address', methods=['GET', 'POST'])
 @login_required
@@ -101,21 +105,21 @@ def address():
    form = AccountForm()
 
    userId = session["username"]
-   user = UserInformation.query.filter_by(dbname=userId).first()
-   
+   print(userId)
+   user = UserInformation.query.filter_by(id=userId).first()
+
    if form.validate_on_submit():
       user.dbStreet = form.Street.data
       user.dbCity = form.City.data
       user.dbCountry = form.Country.data
       db.session.commit()
-      'Successfully updated information'
 
-   return render_template('address.html', form=form)
-
+   return render_template('address.html', form=form, Street=user.dbStreet, City = user.dbCity, Country = user.dbCountry, Name = user.dbname)
 
 @app.route('/logout')
 @login_required
 def logout():
+   session.pop("username", None)
    logout_user()
    return redirect(url_for('HomePage'))
 

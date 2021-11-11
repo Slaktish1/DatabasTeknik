@@ -12,6 +12,7 @@ wtforms = "*"
 "wtforms.validators" = "*"
 flask-login = "*"
 email-validator = "*"
+flask-session = "*"
 
 [dev-packages]
 

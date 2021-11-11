@@ -61,6 +61,8 @@ body{
     justify-content: space-around;
   }
   
+
+
   .col-2{
     flex-basis: 50%;
     min-width: 350px;
@@ -79,6 +81,7 @@ body{
   
   .btn{
     display: inline-block;
+    width: 200px;
     background: white;
     color: rgb(0, 0, 0);
     font-size: 27px;
@@ -123,19 +126,42 @@ body{
     margin-bottom: 20px;
   }
 
-  .login{
-      display: flex;
-      width: 85%;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      color: black;
-      height: 600px;
-  }
-
   .regcontainer{
+    flex-basis: 30%;
     font-size: 170%;
     margin: 0 auto;
     padding-left: 25px;
     padding-right: 25px;
+  }
+
+  .currentInfo p{
+      color: black;
+  }
+
+  .col-4{
+    font-size: 31px;
+    flex-basis: 47%;
+    padding: 5px;
+    min-width: 200px;
+    margin-bottom: 450px;
+    transition: transform 0.3s;
+  }
+
+  .col-4 p{
+      font-size: 30px;
+      color: black;
+      margin-bottom: 0;
+  }
+
+  .btn2{
+    display: inline-block;
+    background: rgb(255, 129, 129);
+    color: rgb(0, 0, 0);
+    font-size: 27px;
+    padding: 14px;
+    padding-left: 22px;
+    padding-right: 22px;
+    margin: 15px 0;
+    border-radius: 30px;
+    transition: background 0.5s;
   }
