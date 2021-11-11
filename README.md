@@ -1,3 +1,3 @@
 # DatabasTeknik
-# Very cool projext guys
+# Very cool project guys
 
