@@ -1,0 +1,141 @@
+body{
+    background: white;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+  
+  .header{
+    background: #101010ea;
+  }
+  
+  .header .row{
+    margin-top: 45px;
+  }
+  
+  .container{
+    max-width: 100%;
+    margin: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  
+  
+  .navbar{
+    max-height: 100px;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    padding: 25px;
+  }
+  
+  nav{
+    flex: 1;
+    text-align: right;
+  }
+  
+  nav ul{
+    display: inline-block;
+    list-style-type: none;
+  }
+  
+  nav ul li{
+    display: inline-block;
+    margin-right: 45px;
+  }
+  
+  a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+  }
+  p{
+    font-size: 23px;
+    color: rgb(255, 255, 255);
+  }
+  
+  .row{
+    display: flex;
+    width: 85%;
+    margin: 0 auto;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .col-2{
+    flex-basis: 50%;
+    min-width: 350px;
+  }
+  
+  .col-2 img{
+    max-width: 100%;
+  }
+  
+  .col-2 h1{
+    font-size: 70px;
+    line-height: 60px;
+    margin: 35px 0;
+    color: white;
+  }
+  
+  .btn{
+    display: inline-block;
+    background: white;
+    color: rgb(0, 0, 0);
+    font-size: 27px;
+    padding: 14px;
+    padding-left: 22px;
+    padding-right: 22px;
+    margin: 15px 0;
+    border-radius: 30px;
+    transition: background 0.5s;
+  }
+  
+  .btn:hover{
+    background: #bec5c9;
+  }
+  
+  .footer{
+    background: hsl(0, 0%, 6%);
+    color: #8a8a8a;
+    font-size: 14px;
+    padding: 120px 0 80px;
+  }
+  
+  .footer p{
+    padding-left: 15px;
+    font-size: 12px;
+    color: #8a8a8a8a
+  }
+  
+  .footer-col-1 p{
+    padding-left: 0;
+    font-size: 15px;
+    color: #8a8a8a8a
+  }
+  
+  .footer-col-2{
+    content:"";
+    min-width: 350px;
+  }
+  
+  .footer h3{
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .login{
+      display: flex;
+      width: 85%;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      color: black;
+      height: 600px;
+  }
+
+  .regcontainer{
+    font-size: 170%;
+    margin: 0 auto;
+    padding-left: 25px;
+    padding-right: 25px;
+  }

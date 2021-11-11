@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
+flask-wtf = "*"
+flask-bootstrap = "*"
+wtforms = "*"
+"wtforms.validators" = "*"
+flask-login = "*"
+email-validator = "*"
 
 [dev-packages]
 
