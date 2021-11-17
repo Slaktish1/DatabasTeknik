@@ -1,4 +1,3 @@
-from re import L
 from flask import Flask, render_template, redirect, url_for, session, flash, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -67,7 +66,8 @@ def load_user(user_id):
 
 @app.route('/')
 def HomePage():
-   return render_template('HomePage.html')
+   products = Product.query.all()
+   return render_template('HomePage.html', products = products)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
