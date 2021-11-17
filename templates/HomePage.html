@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,13 +23,13 @@
         <nav>
           <ul>
             <li><a href="">Home</a></li>
-            <li><a href="">Products</a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
             <li><a href="">About</a></li>
             <li><a href="">Contact</a></li>
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
-        <a href=""> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
+        <a href="{{ url_for('shoppingCart') }}"> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
       </div>
     </div>
   
@@ -97,38 +98,17 @@
   <p>MENS</p>
   <p2>SHOP</p2>
   </div>
-  <div class="row">
-    <div class="col-4"> 
-      <img src="static/img/ts_black.jpg">
-      <h4>Plain Collection</h4>
-      <h4>T-Shirt</h4>
-      <p>$39.90</p>
-      <p2>Black</p2>
+  {% for product in product_asset %}
+    <div class="row">
+      <div class="col-4"> 
+        <img src="static/img/{{ product_asset.image }}">
+        <h4>{{ product_asset.name }}</h4>
+        <p>{{ product_asset.price }}</p>
+        <p2>{{ product_asset.color }}</p2>
+      </div>
     </div>
-    <div class="col-4"> 
-      <img src="static/img/ts_grey.jpg">
-      <h4>Plain Collection</h4>
-      <h4>T-Shirt</h4>
-      <p>$39.90</p>
-      <p2>Grey</p2>
-    </div>   
-    <div class="col-4"> 
-      <img src="static/img/sw_black.jpg">
-      <h4>705 Collection Sweatshirt</h4>
-      <h4>Sweatshirt</h4>
-      <p>$44.90</p>
-      <p2>Black</p2>
-    </div>
-    <div class="col-4"> 
-      <img src="static/img/ts_white.jpg">
-      <h4>Plain Collection</h4>
-      <h4>T-Shirt</h4>
-      <p>$39.90</p>
-      <p2>White</p2>
-    </div>
-  </div>
 </div>
-
+  {% endfor %}
 <!--- Footer --->
 
 <div class="footer">

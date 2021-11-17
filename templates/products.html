@@ -1,0 +1,52 @@
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SuperShop | You are what you buy</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
+</head>
+
+<body>
+  <!--- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="navbar"> 
+        <div class="logo">
+          <a href= "{{ url_for('HomePage') }}" >
+            <img src="static/img/Logo.png">
+          </a>
+        </div>
+    
+        <nav>
+          <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="">Products</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Contact</a></li>
+            <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
+          </ul>
+        </nav>
+        <a href=""> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
+      </div>
+    </div>
+    <div class="small-container">
+        <div class="title">    
+        <p>MENS</p>
+        <p2>SHOP</p2>
+        </div>
+        {% for product in products %}
+          <div class="row">
+            <div class="col-4"> 
+              <img src="static/img/{{ product.product_img }}">
+              <h4>{{ product.product_name }}</h4>
+              <p>{{ product.product_price }} kr</p>
+              <p2>{{ product.product_description }}</p2>
+              <li><a href="{{ url_for('quick_add',id= product.id ) }}">Add to Cart</a></li>
+            </div>
+          </div>
+      </div>
+        {% endfor %}        
+{% endblock %}

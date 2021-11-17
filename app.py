@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, session, flash
+from re import L
+from flask import Flask, render_template, redirect, url_for, session, flash, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -43,12 +44,12 @@ class UserInformation(UserMixin, db.Model):
    dbEmail = db.Column(db.String(120), nullable=False)
    dbPw = db.Column(db.String(120), nullable=False)
 
-class ProductAsset(db.Model):
-   id = db.Column(db.Integer, primary_key=True, unique=True)
-   prodName = db.Column(db.String(80), unique=True, nullable=False)
-   prodPrice = db.Column(db.Float, unique=False, nullable=False)
-   prodImage = db.Column(db.LargeBinary, unique=False, nullable=False)
-   prodColor = db.Column(db.String(120), unique=False, nullable=False)
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(64), index = True)
+    product_price = db.Column(db.Float, index=True)
+    product_img = db.Column(db.String(200), index=True)
+    product_description = db.Column(db.String(200), index=True)
 
 class ActiveOrder(db.Model):
    Productid = db.Column(db.Integer, primary_key=True, unique=True)
@@ -123,5 +124,42 @@ def logout():
    logout_user()
    return redirect(url_for('HomePage'))
 
+@app.route('/products')
+def products():
+    products = Product.query.all()
+    return render_template("products.html",title="Products",products=products)
+
+@app.route('/cart')
+@login_required
+def shoppingCart():
+   if 'cart' not in session:
+      return 'No things in cart!'
+   if 'cart' in session:
+      for item in session['cart']:
+         
+         product = Product.query.filter_by(id=item['id']).first()  
+     
+   return render_template("shoppingcart.html", product=product)   
+
+@app.route('/remove',methods=['GET'])
+def remove():
+   text = 'string: '
+   for item in session['cart']:
+      product = Product.query.filter_by(id=item['id']).first()            
+      text = text + str(product)   
+   return text
+
+@app.route('/quick-add', methods=['GET'])
+def quick_add():
+       
+   id = request.args.get('id', '')
+   if 'cart' not in session:
+        session['cart'] = []
+
+   session['cart'].append({'id': id})
+   session.modified = True
+
+   return redirect(url_for('HomePage'))
+                                             
 if __name__ == '__main__':
    app.run(debug=True)
