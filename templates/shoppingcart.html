@@ -38,18 +38,18 @@
         <p>SHOPPINGCART!</p>
         </div>
       
-      
+      {% for product in products %}
       <div class="row">
         <div class="col-4"> 
           <img src="static/img/{{ product.product_img }}">
           <h4>{{ product.product_name }}</h4>
           <p>{{ product.product_price }} kr</p>
           <p2>{{ product.product_description }}</p2>
-          <li><a href="{{ url_for('remove')}}">REMOVE!!!</a></li>
+          <li><a href="{{ url_for('remove',id= product.id ) }}">REMOVE!!!</a></li>
         </div>
       </div>
   </div>
-    
+    {% endfor %}
       
     <div class="footer">
         <div class="container">

@@ -1,3 +1,4 @@
+from typing import Type
 from flask import Flask, render_template, redirect, url_for, session, flash, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -121,6 +122,7 @@ def address():
 @login_required
 def logout():
    session.pop("username", None)
+   session.pop("cart", None)
    logout_user()
    return redirect(url_for('HomePage'))
 
@@ -132,22 +134,24 @@ def products():
 @app.route('/cart')
 @login_required
 def shoppingCart():
+   products = []
    if 'cart' not in session:
       return 'No things in cart!'
    if 'cart' in session:
+      if len(session['cart']) == 0:
+         return 'No things in cart!'    
       for item in session['cart']:
-         
-         product = Product.query.filter_by(id=item['id']).first()  
-     
-   return render_template("shoppingcart.html", product=product)   
+         products.append(Product.query.filter_by(id=item).first())
+      print((session['cart']))
+      print((products))
+   return render_template("shoppingcart.html", products=products)   
 
 @app.route('/remove',methods=['GET'])
 def remove():
-   text = 'string: '
-   for item in session['cart']:
-      product = Product.query.filter_by(id=item['id']).first()            
-      text = text + str(product)   
-   return text
+   id = request.args.get('id', '')
+   session['cart'].remove(int(id))
+   session.modified = True
+   return redirect(url_for('shoppingCart'))
 
 @app.route('/quick-add', methods=['GET'])
 def quick_add():
@@ -156,10 +160,10 @@ def quick_add():
    if 'cart' not in session:
         session['cart'] = []
 
-   session['cart'].append({'id': id})
+   session['cart'].append(int(id))
    session.modified = True
-
-   return redirect(url_for('HomePage'))
+   print(len(session['cart']))
+   return redirect(url_for('products'))
                                              
 if __name__ == '__main__':
    app.run(debug=True)
