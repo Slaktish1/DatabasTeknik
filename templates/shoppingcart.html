@@ -1,8 +1,19 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Login
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/cart.css">
+{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
   <title>SuperShop | You are what you buy</title>
-  <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/cart.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
@@ -31,53 +42,96 @@
         <a href=""> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
       </div>
     </div>
-
-
-    <div class="small-container">
-        <div class="title">    
-        <p>SHOPPINGCART!</p>
-        </div>
-      
-      {% for product in products %}
-      <div class="row">
-        <div class="col-4"> 
-          <img src="static/img/{{ product.product_img }}">
-          <h4>{{ product.product_name }}</h4>
-          <p>{{ product.product_price }} kr</p>
-          <p2>{{ product.product_description }}</p2>
-          <li><a href="{{ url_for('remove',id= product.id ) }}">REMOVE!!!</a></li>
-        </div>
-      </div>
   </div>
-    {% endfor %}
-      
-    <div class="footer">
-        <div class="container">
-          <div class="row">
-            <div class="footer-col-1">
-              <img src="static/img/Logo.png">
-              <p>You are what you buy. So make sure only to buy good products.</p>
-            </div>
-            <div class="footer-col-2">
-      
-            </div>
-            <div class="footer-col-3">
-              <h3>Want to visit our physical store?</h3>
-              <p>We have physical stores are located at:</p>
-              <p>Butiksgränd 1, Luleå, Sweden</p>
-              <p>Ananasgatan 16, Örebro, Sweden</p>
-              <p>Vattenmelonsvägen 2, Malmö, Sweden</p>
-            </div>
-            <div class="footer-col-4">
-              <h3>Contact Information</h3>
-              <p>+46 123 45 67</p>
-              <p>Campusvägen 1</p>
-              <p>977 00, Luleå - Sweden</p>
-              <p>support@supershop.com</p>
-            </div>
-          </div>
+
+  <!-- Body -->
+
+<div class=cartcontainer> 
+  <div class="cart content-wrapper">
+    <h1>Shopping Cart</h1>
+    <form action="index.php?page=cart" method="post">
+        <table>
+            <thead>
+                <tr>
+                    <td colspan="2">Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+            <tbody>
+              {% if plen == 0  %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">You have no products added in your Shopping Cart</td>
+                </tr>
+                {% elif plen > 0 %}
+                {% for product in products %}
+                <tr>
+                    <td class="img">
+                        <a href="{{ url_for('get_product',pID= product.id ) }}">
+                          <img src="static/img/{{ product.product_img }}" width="50" height="50" alt="{{ product.product_name }}">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('get_product',pID= product.id ) }}">{{ product.product_name }}</a>
+                        <br>
+                        <a href="{{ url_for('remove',id= product.id ) }}">Remove</a>
+                    </td>
+                    <td class="price">&dollar;{{ product.product_price }}</td>
+                    <td class="quantity">
+                      <div class="input-group">
+                        <form method="POST" action="/cart">
+                          {{ wtf.form_field(form.quantity) }}
+                        </form>
+                      </div>
+                    </td>
+                    <td class="price">&dollar;{{ product.product_price }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="subtotal">
+            <span class="text">Subtotal</span>
+            <span class="price">&dollar; $50</span>
         </div>
+        <div class="buttons">
+            <input type="submit" value="Update" name="update">
+            <input type="submit" value="Place Order" name="placeorder">
+        </div>
+    </form>
+  </div>
+</div>
+  
+  <!-- Footer -->
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="footer-col-1">
+        <img src="static/img/Logo.png">
+        <p>You are what you buy. So make sure only to buy good products.</p>
       </div>
-      
-      </body>
-      </html>
+      <div class="footer-col-2">
+
+      </div>
+      <div class="footer-col-3">
+        <h3>Want to visit our physical store?</h3>
+        <p>We have physical stores are located at:</p>
+        <p>Butiksgränd 1, Luleå, Sweden</p>
+        <p>Ananasgatan 16, Örebro, Sweden</p>
+        <p>Vattenmelonsvägen 2, Malmö, Sweden</p>
+      </div>
+      <div class="footer-col-4">
+        <h3>Contact Information</h3>
+        <p>+46 123 45 67</p>
+        <p>Campusvägen 1</p>
+        <p>977 00, Luleå - Sweden</p>
+        <p>support@supershop.com</p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SuperShop | You are what you buy</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/ppage.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
+</head>
+
+<body>
+  <!--- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="navbar"> 
+        <div class="logo">
+          <a href= "{{ url_for('HomePage') }}" >
+            <img src="static/img/Logo.png">
+          </a>
+        </div>
+    
+        <nav>
+          <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Contact</a></li>
+            <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
+          </ul>
+        </nav>
+        <a href=""> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+
+  <div class="offer">
+    <div class="small-container">
+      <div class="row">
+        <div class="col-2">
+          <img src="static/img/{{ prod_id.product_img }}">
+        </div>
+        <div class="col-2">
+          <h1>{{ prod_id.product_name }}</h1>
+          <p>{{ prod_id.product_description }}</p>
+          <li><a href="{{ url_for('quick_add',id= prod_id.id ) }}">Add to Cart</a></li>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="footer-col-1">
+        <img src="static/img/Logo.png">
+        <p>You are what you buy. So make sure only to buy good products.</p>
+      </div>
+      <div class="footer-col-2">
+
+      </div>
+      <div class="footer-col-3">
+        <h3>Want to visit our physical store?</h3>
+        <p>We have physical stores are located at:</p>
+        <p>Butiksgränd 1, Luleå, Sweden</p>
+        <p>Ananasgatan 16, Örebro, Sweden</p>
+        <p>Vattenmelonsvägen 2, Malmö, Sweden</p>
+      </div>
+      <div class="footer-col-4">
+        <h3>Contact Information</h3>
+        <p>+46 123 45 67</p>
+        <p>Campusvägen 1</p>
+        <p>977 00, Luleå - Sweden</p>
+        <p>support@supershop.com</p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+</body>
+</html>

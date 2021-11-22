@@ -40,7 +40,7 @@
         {% for product in products %}
           <div class="row">
             <div class="col-4"> 
-              <img src="static/img/{{ product.product_img }}">
+              <a href="{{ url_for('get_product',pID= product.id ) }}"> <img src="static/img/{{ product.product_img }}"> </a>
               <h4>{{ product.product_name }}</h4>
               <p>{{ product.product_price }} kr</p>
               <p2>{{ product.product_description }}</p2>

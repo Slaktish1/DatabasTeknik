@@ -1,0 +1,110 @@
+body{
+    background: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+  .header{
+    background: #101010ea;
+  }
+
+  .header .row{
+    margin-top: 45px;
+  }
+
+  .container{
+    max-width: 100%;
+    margin: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .small-container{
+    max-width: 1500px;
+    margin: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .navbar{
+    max-height: 100px;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    padding: 25px;
+  }
+
+  nav{
+    flex: 1;
+    text-align: right;
+  }
+
+  nav ul{
+    display: inline-block;
+    list-style-type: none;
+  }
+
+  nav ul li{
+    display: inline-block;
+    margin-right: 45px;
+  }
+
+  nav a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+  }
+
+  .offer{
+    background:radial-gradient(#47ace6, #090d13);
+    margin-top: 0 auto;
+    padding: 30px 0;
+  }
+
+  .offer h1{
+    margin-top: 0px;
+    font-size: 55px;
+    color: white;
+  }
+
+  .offer p{
+    font-size: 16px;
+    color: white;
+  }
+
+  .offer h2{
+    font-size: 25px;
+    color: white;
+    margin-bottom: 0px;
+  }
+
+  .offer a{
+    font-size: 19px;
+  }
+
+.footer{
+    background: #101010;
+    color: #8a8a8a;
+    font-size: 14px;
+    padding: 120px 0 80px;
+  }
+
+  .footer p{
+    padding-left: 15px;
+    font-size: 12px;
+    color: #8a8a8a8a
+  }
+
+  .footer-col-1 p{
+    padding-left: 0;
+    font-size: 15px;
+    color: #8a8a8a8a
+  }
+
+  .footer-col-2{
+    content:"";
+    min-width: 350px;
+  }
+
+  .footer h3{
+    color: #fff;
+    margin-bottom: 20px;
+  }

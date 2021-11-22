@@ -4,9 +4,11 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, PasswordField, BooleanField, EmailField
+from wtforms.fields.numeric import IntegerField
 from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from wtforms.widgets import NumberInput
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\x13\xb2\xe4E\x0e\x03\x9da\x98\x8dg k\xa5\xa3\n\xf5!H\x08n\xc9\xabl'
@@ -27,12 +29,15 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
    email = StringField('email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=50)])
    username = StringField('username', validators=[InputRequired(), Length(min=4 , max=15)])
-   password = StringField('password', validators=[InputRequired(), Length(min=8 , max=80)])
+   password = PasswordField('password', validators=[InputRequired(), Length(min=8 , max=80)])
 
 class AccountForm(FlaskForm):
    Street = StringField('Street', validators=[InputRequired(), Length(max=50)])
    City = StringField('City', validators=[InputRequired(), Length(max=50)])
    Country = StringField('Country', validators=[InputRequired(), Length(max=50)])
+
+class shoppingcartForm(FlaskForm):
+   quantity = IntegerField('', validators=[InputRequired()], widget=NumberInput(), default=1)
 
 class UserInformation(UserMixin, db.Model):
    id = db.Column(db.Integer, primary_key=True, unique=True)
@@ -128,12 +133,25 @@ def logout():
 
 @app.route('/products')
 def products():
-    products = Product.query.all()
-    return render_template("products.html",title="Products",products=products)
+   products = Product.query.all()
+   return render_template("products.html",title="Products",products=products)
+
+@app.route('/product')
+def get_product():
+   pID = request.args.get('pID')
+   print(type(pID))
+   prod_id = Product.query.filter_by(id=int(pID)).first()
+   return render_template("product_page.html",prod_id=prod_id)
+
+@app.route('/order')
+def order():
+   new_order = ActiveOrder(dbUserID= session['username'])
+
 
 @app.route('/cart')
 @login_required
 def shoppingCart():
+   form = shoppingcartForm()
    products = []
    if 'cart' not in session:
       return 'No things in cart!'
@@ -144,7 +162,7 @@ def shoppingCart():
          products.append(Product.query.filter_by(id=item).first())
       print((session['cart']))
       print((products))
-   return render_template("shoppingcart.html", products=products)   
+   return render_template("shoppingcart.html", products=products, plen = len(products), form = form)   
 
 @app.route('/remove',methods=['GET'])
 def remove():
