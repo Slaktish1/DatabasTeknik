@@ -49,57 +49,71 @@ Login
 <div class=cartcontainer> 
   <div class="cart content-wrapper">
     <h1>Shopping Cart</h1>
-    <form action="index.php?page=cart" method="post">
         <table>
-            <thead>
-                <tr>
-                    <td colspan="2">Product</td>
-                    <td>Price</td>
-                    <td>Quantity</td>
-                    <td>Total</td>
-                </tr>
-            </thead>
-            <tbody>
-              {% if plen == 0  %}
-                <tr>
-                    <td colspan="5" style="text-align:center;">You have no products added in your Shopping Cart</td>
-                </tr>
-                {% elif plen > 0 %}
-                {% for product in products %}
-                <tr>
-                    <td class="img">
-                        <a href="{{ url_for('get_product',pID= product.id ) }}">
-                          <img src="static/img/{{ product.product_img }}" width="50" height="50" alt="{{ product.product_name }}">
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ url_for('get_product',pID= product.id ) }}">{{ product.product_name }}</a>
-                        <br>
-                        <a href="{{ url_for('remove',id= product.id ) }}">Remove</a>
-                    </td>
-                    <td class="price">&dollar;{{ product.product_price }}</td>
-                    <td class="quantity">
-                      <div class="input-group">
-                        <form method="POST" action="/cart">
-                          {{ wtf.form_field(form.quantity) }}
+          <thead>
+              <tr>
+                  <td colspan="2">Product</td>
+                  <td>Price</td>
+                  <td>Quantity</td>
+                  <td>Total</td>
+              </tr>
+          </thead>
+          <tbody>
+            {% if plen == 0  %}
+              <tr>
+                  <td colspan="5" style="text-align:center;">You have no products added in your Shopping Cart</td>
+              </tr>
+              {% elif plen > 0 %}
+              {% for product in products %}
+              <tr>
+                  <td class="img">
+                      <a href="{{ url_for('get_product',pID= product.id ) }}">
+                        <img src="static/img/{{ product.product_img }}" width="50" height="50" alt="{{ product.product_name }}">
+                      </a>
+                  </td>
+                  <td>
+                      <a href="{{ url_for('get_product',pID= product.id ) }}">{{ product.product_name }}</a>
+                      <br>
+                      <a href="{{ url_for('remove',id= product.id) }}">Remove All</a>
+                      
+                      
+                      <!-- <td><a href="{{ url_for('updatecart', id=product.id) }}"><input type="number" jallaquantity="jallaquantity" min="1" max=10><button type="submit" class="btn">Update</button></a></td>
+                      -->
+                      
+
+                      <!-- 
+                      <input value={{product.id}} type=hidden name="jalla">
+                      <form action="{{ url_for('updatecart', code=product.id) }}" method="post">
+                      
+                      -->
+
+                      <td class="price">&dollar;{{ product.product_price }}</td>
+                      {% for lists in sess %}
+                        {% if product.id == lists[0] %}
+                        <td> 
+                        <form action="{{ url_for('updatecart', code=product.id) }}" method="post"> 
+                          <input type="number" name="jallaquantity" min="1" max=10 value="{{ lists[1] }}">
+                          <input type="submit" value="update">
                         </form>
-                      </div>
-                    </td>
-                    <td class="price">&dollar;{{ product.product_price }}</td>
-                </tr>
-                {% endfor %}
-                {% endif %}
-            </tbody>
-        </table>
-        <div class="subtotal">
-            <span class="text">Subtotal</span>
-            <span class="price">&dollar; $50</span>
-        </div>
-        <div class="buttons">
-            <input type="submit" value="Update" name="update">
-            <input type="submit" value="Place Order" name="placeorder">
-        </div>
-    </form>
+                        </td>
+                        <td class="price">&dollar;{{ product.product_price * lists[1] }}</td>
+                        {% endif %}
+                      {% endfor %}
+                  </td>
+                  
+              </tr>
+              {% endfor %}
+              {% endif %}
+          </tbody>
+      </table>
+      <div class="subtotal">
+          <span class="text">Subtotal</span>
+          <span class="price">&dollar; $50</span>
+      </div>
+      <div class="buttons">
+          <input type="submit" value="Update" name="update">
+          <a href="{{ url_for('order') }}" ><input type="submit" value="Place Order" name="placeorder"></a>
+      </div>
   </div>
 </div>
   

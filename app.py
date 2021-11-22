@@ -66,6 +66,11 @@ class ActiveOrder(db.Model):
    dbCountry = db.Column(db.String(120), nullable=False)
    dbUserID = db.Column(db.String(120), nullable=True)
 
+class prodInOrder(db.Model):
+   Orderid = db.Column(db.Integer, primary_key=True,unique=False)
+   productID = db.Column(db.Integer, nullable=False)
+   Quantity = db.Column(db.Integer, nullable=False)
+
 @login_manager.user_loader
 def load_user(user_id):
    return UserInformation.query.get(int(user_id))
@@ -134,6 +139,8 @@ def logout():
 @app.route('/products')
 def products():
    products = Product.query.all()
+   a = [products]
+   print(a)
    return render_template("products.html",title="Products",products=products)
 
 @app.route('/product')
@@ -143,33 +150,39 @@ def get_product():
    prod_id = Product.query.filter_by(id=int(pID)).first()
    return render_template("product_page.html",prod_id=prod_id)
 
-@app.route('/order')
+@app.route('/order', methods=['GET', 'POST'])
 def order():
-   new_order = ActiveOrder(dbUserID= session['username'])
+   new_order = ActiveOrder(UserID= session['username'])
+   db.session.add(new_order)
+   db.session.commit()
+   for item in session['cart']:
+      QP = Product.query.filter_by(id=item[0]).first()
+      new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item[1])
+      db.session.add(new_prodInOrder)
+      db.session.commit()
+   session.pop("cart", None)
+   return 'Order recived!'
 
-
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 @login_required
 def shoppingCart():
+   prodQTY = 1
    form = shoppingcartForm()
    products = []
+
    if 'cart' not in session:
       return 'No things in cart!'
    if 'cart' in session:
       if len(session['cart']) == 0:
          return 'No things in cart!'    
-      for item in session['cart']:
-         products.append(Product.query.filter_by(id=item).first())
-      print((session['cart']))
-      print((products))
-   return render_template("shoppingcart.html", products=products, plen = len(products), form = form)   
+      print("SESSIONCART", session['cart'])
+      for items in session['cart']:
+         print("ITEMS", items)
+         products.append(Product.query.filter_by(id=items[0]).first())
 
-@app.route('/remove',methods=['GET'])
-def remove():
-   id = request.args.get('id', '')
-   session['cart'].remove(int(id))
-   session.modified = True
-   return redirect(url_for('shoppingCart'))
+   return render_template("shoppingcart.html", products=products, plen = len(products), form = form, sess = session['cart'])   
+
+
 
 @app.route('/quick-add', methods=['GET'])
 def quick_add():
@@ -178,10 +191,58 @@ def quick_add():
    if 'cart' not in session:
         session['cart'] = []
 
-   session['cart'].append(int(id))
+   session['cart'].append([int(id), 1])
    session.modified = True
    print(len(session['cart']))
    return redirect(url_for('products'))
                                              
 if __name__ == '__main__':
    app.run(debug=True)
+
+''' 
+@app.route('/updatecart/<int:code>', methods=['POST', 'GET'])
+def updatecart(code):
+   if 'cart' not in session and len(session['cart']) <= 0:
+      return redirect(url_for('HomePage'))
+   if request.method == "POST":
+      quantity = request.form.get('quantity')
+      jalla = request.form.get('jalla')
+      print("JALLAid", jalla)
+      try:
+         session.modified = True
+         for i in session['cart']:
+            if int(i[0]) == int(jalla):
+               print("JALLAid", jalla)
+               i[1] = int(quantity)
+               print("QUANT", i[1])
+               flash('Cart updated')
+               return redirect(url_for('shoppingCart'))
+      except Exception as e:
+         print(e)
+         return redirect(url_for('HomePage'))
+'''
+
+@app.route('/updatecart',methods=['GET', 'POST'])
+def updatecart():
+   id = request.args.get('code')
+   jallaquantity = request.form['jallaquantity']
+   print("JALLAQUANT", jallaquantity)
+   print("JALLAIDNEW", id)
+   for items in session['cart']:
+      if items[0] == int(id):
+         items[1] = int(jallaquantity)
+
+   session.modified = True
+   return redirect(url_for('shoppingCart'))
+
+@app.route('/remove',methods=['GET'])
+def remove():
+   id = request.args.get('id', '')
+   for items in session['cart']:
+      print("SessionITEMS", items)
+      if int(id) == items[0]:
+         session['cart'].remove(items)
+      
+     # session['cart'].remove(items[0])
+   session.modified = True
+   return redirect(url_for('shoppingCart'))

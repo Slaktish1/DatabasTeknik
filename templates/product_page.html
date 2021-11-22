@@ -43,9 +43,14 @@
         </div>
         <div class="col-2">
           <h1>{{ prod_id.product_name }}</h1>
+          
           <p>{{ prod_id.product_description }}</p>
-          <li><a href="{{ url_for('quick_add',id= prod_id.id ) }}">Add to Cart</a></li>
+        
+        <div class="smallrow">
+          <h1>{{ prod_id.product_price }} kr</h1>
+          <a href="{{ url_for('quick_add',id= prod_id.id ) }}" class="btn">Add to Cart</a>
         </div>
+      </div>
       </div>
     </div>
   </div>

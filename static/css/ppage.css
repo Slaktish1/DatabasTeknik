@@ -1,6 +1,7 @@
 body{
     background: white;
     font-family: 'Roboto', sans-serif;
+    margin: 0 auto;
 }
 
   .header{
@@ -19,10 +20,21 @@ body{
   }
 
   .small-container{
-    max-width: 1500px;
-    margin: auto;
+    max-width: 80%;
+    margin: 0 auto;
     padding-left: 25px;
     padding-right: 25px;
+  }
+
+  .title p{
+    font-size: 20px;
+    margin-bottom: 0;
+  }
+
+  .title p2{
+    margin-top: 0;
+    padding-bottom: 50px;
+    font-size: 50px;
   }
 
   .navbar{
@@ -54,25 +66,28 @@ body{
   }
 
   .offer{
-    background:radial-gradient(#47ace6, #090d13);
     margin-top: 0 auto;
     padding: 30px 0;
+  }
+
+  .offer img{
+    max-width: 600px;
   }
 
   .offer h1{
     margin-top: 0px;
     font-size: 55px;
-    color: white;
+    color: black;
   }
 
   .offer p{
     font-size: 16px;
-    color: white;
+    color: black;
   }
 
   .offer h2{
     font-size: 25px;
-    color: white;
+    color: black;
     margin-bottom: 0px;
   }
 
@@ -108,3 +123,71 @@ body{
     color: #fff;
     margin-bottom: 20px;
   }
+
+  .row{
+    display: flex;
+    width: 90%;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .col-2{
+    flex: 1;
+    min-width: 350px;
+  }
+
+  .pricebtn{
+    flex: 1;
+    margin-right: 20px;
+  }
+
+  .btn{
+    display: inline-block;
+    background: rgb(76, 194, 194);
+    color: rgb(0, 0, 0);
+    font-size: 27px;
+    padding: 14px;
+    padding-left: 22px;
+    padding-right: 22px;
+    margin: 15px 0;
+    border-radius: 30px;
+    transition: background 0.5s;
+  }
+
+  .smallrow{
+    display: flex;
+    width: 90%;
+    margin: 0;
+    align-items: left;
+    align-content: left;
+    justify-content: center;
+    padding-right: 140px
+  }
+
+  .smallrow h1{
+    font-size: 32px;
+    padding-right: 50px;
+    margin-top: 20px;
+  }
+
+  .col_container{
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-between;
+    justify-content: space-between;
+  }
+
+  .item {
+    max-width: 300px;
+    font-size: 30px;
+    text-align: left;
+    margin: 10px;
+  }
+
+  .container::before, .container::after {
+    content:"";
+    width: 100%;
+    order: 1;
+  }
+
