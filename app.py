@@ -59,11 +59,13 @@ class Product(db.Model):
 class ActiveOrder(db.Model):
    oID = db.Column(db.Integer, primary_key=True, unique=True)
    UserID = db.Column(db.Integer, nullable=False)
+   Status = db.Column(db.String(120), nullable=True, default='Ordered')
 
 class prodInOrder(db.Model):
    Orderid = db.Column(db.Integer, primary_key=True,unique=False)
    productID = db.Column(db.Integer, nullable=False)
    Quantity = db.Column(db.Integer, nullable=False)
+   
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -101,7 +103,7 @@ def login():
       if session['username']:
          user = UserInformation.query.filter_by(id=session['username']).first()
          if user.dbuserType == 'admin':
-            return render_template('order.html')
+            return redirect(url_for('address'))
          if user.dbuserType == 'customer':
             return redirect(url_for('address'))
       
@@ -121,18 +123,57 @@ def login():
 @login_required
 def address():
    form = AccountForm()
-
+   products = []
+   quantity = []
+   OrderProd = []
    userId = session["username"]
-   print(userId)
+   Order = ActiveOrder.query.filter_by(UserID=userId).all()
    user = UserInformation.query.filter_by(id=userId).first()
+   if Order == None:
+      
 
-   if form.validate_on_submit():
-      user.dbStreet = form.Street.data
-      user.dbCity = form.City.data
-      user.dbCountry = form.Country.data
-      db.session.commit()
+      if form.validate_on_submit():
+         user.dbStreet = form.Street.data
+         user.dbCity = form.City.data
+         user.dbCountry = form.Country.data
+         db.session.commit()
 
-   return render_template('address.html', form=form, Street=user.dbStreet, City = user.dbCity, Country = user.dbCountry, Name = user.dbname)
+      return render_template('address.html', form=form, Street=user.dbStreet, City = user.dbCity, Country = user.dbCountry, Name = user.dbname, UT = user.dbuserType)
+   else:
+      if user.dbuserType == 'customer':
+         for items in Order:
+            OrderProd = OrderProd + prodInOrder.query.filter_by(Orderid=items.oID).all()
+            print('CUSTOMER ORDER!!!!!',OrderProd)
+         for prod in OrderProd:
+            products = products + Product.query.filter_by(id=prod.productID).all()
+         
+         for quan in OrderProd:
+            quantity = quantity + [quan.Quantity]
+            
+         if form.validate_on_submit():
+            user.dbStreet = form.Street.data
+            user.dbCity = form.City.data
+            user.dbCountry = form.Country.data
+            db.session.commit()
+         return render_template('address.html', form=form, Street=user.dbStreet, City = user.dbCity, Country = user.dbCountry, Name = user.dbname, products = products, quantity = quantity, Order = Order, UT = user.dbuserType )
+      
+      elif user.dbuserType == 'admin':
+         Order = ActiveOrder.query.all()
+         OrderProd = prodInOrder.query.all()
+         print('ADMIN ORDER!!!!!',OrderProd)
+         for prod in OrderProd:
+            products = products + Product.query.filter_by(id=prod.productID).all()
+         
+         for quan in OrderProd:
+            quantity = quantity + [quan.Quantity]
+            
+         if form.validate_on_submit():
+            user.dbStreet = form.Street.data
+            user.dbCity = form.City.data
+            user.dbCountry = form.Country.data
+            db.session.commit()
+         return render_template('address.html', form=form, Street=user.dbStreet, City = user.dbCity, Country = user.dbCountry, Name = user.dbname, products = products, quantity = quantity, Order = Order, UT = user.dbuserType )
+   
 
 @app.route('/logout')
 @login_required
@@ -145,8 +186,6 @@ def logout():
 @app.route('/products')
 def products():
    products = Product.query.all()
-   a = [products]
-   print(a)
    return render_template("products.html",title="Products",products=products)
 
 @app.route('/product')
@@ -163,7 +202,7 @@ def order():
    print(testUser)
    print(testUser.dbCity)
    print(testUser.dbCountry)
-   if testUser.dbStreet or testUser.dbCity or testUser.dbCountry == None:
+   if testUser.dbStreet == None or testUser.dbCity == None or testUser.dbCountry == None:
       flash('Please submit your shipping information!')
       return redirect(url_for('address'))
 

@@ -41,8 +41,8 @@ Register
     </div>
 </div>
 
-<!-- Account page -->
-
+<!-- Account page for customers -->
+{% if UT == 'customer' %}
 <div class="small-container">
   <div class="row">
     <div class="col-4">
@@ -73,6 +73,57 @@ Register
       </div>
     </div>
   </div>
+</div>
+{% if Order %}
+      <div class="col-4">
+        <h2>Order status:</h2>
+        {% for OL in Order%}
+        <h4>Order number: #{{ OL.oID }}</h4>
+        <h4>Status: {{ OL.Status }}</h4>
+        <h4>{{ products[loop.index0].product_name }}</h4>
+        <p2>{{ products[loop.index0].product_description }}</p2>
+        <p>{{ products[loop.index0].product_price }} kr</p>
+   
+        {% endfor %}
+        {% endif %}
+      </div>
+{% endif %}
+
+<!-- Account page for ADMINS -->
+{% if UT == 'admin' %}
+<div class="small-container">
+  <div class="row">
+    <div class="col-4">
+      <h2> ADMIN VIEW</h2>
+      <p> Logged in as: {{ Name }} </p>
+      <p> Current street: {{ Street }} </p>
+      <p> Curent city: {{ City }} </p>
+      <p> Current country: {{ Country }} </p>
+      <p> You are a: {{ UT }} </p>  
+      <button class='btn2'><a href="{{ url_for('logout') }}"> Sign Out </a></button>
+    </div>
+    {% if Order %}
+    <div class="col-4">
+      <h2>Order status:</h2>
+      {% for OL in Order%}
+      <div class="admincontainer"><a href= "{{ url_for('address') }}" ><p>Order number: #{{ OL.oID }}</p></a></div>
+      <h4>Status: {{ OL.Status }}</h4>
+      {% endfor %}
+      {% endif %}
+    </div>
+{% endif %}
+        <div class="message">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+                 {{ message }}
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!--- Footer --->
