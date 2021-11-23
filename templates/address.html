@@ -30,7 +30,7 @@ Register
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
-        <a href="a"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
+        <a href="{{ url_for('shoppingCart') }}"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
       </div>
     </div>
 </div>
@@ -56,6 +56,15 @@ Register
           {{ wtf.form_field(form.Country) }}
           <button class='btn' type="submit">Update</button>
       </form>
+        <div class="message">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+                 {{ message }}
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
+      </div>
     </div>
   </div>
 </div>

@@ -132,6 +132,7 @@ body{
     margin: 0 auto;
     padding-left: 25px;
     padding-right: 25px;
+    color: black;
   }
 
   .currentInfo p{
@@ -164,4 +165,9 @@ body{
     margin: 15px 0;
     border-radius: 30px;
     transition: background 0.5s;
+  }
+  .message{
+    font-size: 45px;
+    color:tomato;
+    margin-top: 100px;
   }

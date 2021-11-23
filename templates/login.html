@@ -21,8 +21,10 @@ Login
     
         <nav>
           <ul>
-            <li><a href="">Home</a></li>
-            <li><a href="">Products</a></li>
+            <li><a href= "{{ url_for('HomePage') }}" >
+              Home
+            </a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
             <li><a href="">About</a></li>
             <li><a href="">Contact</a></li>
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
@@ -45,6 +47,9 @@ Login
           <button class='btn' type="submit">Sign in</button>
           <button class='btn'><a href="{{ url_for('register') }}">Register</a></button>
       </form>
+
+ 
+<h2>You need to supply Address Information!</h2>
   </div>
 </div>
 
