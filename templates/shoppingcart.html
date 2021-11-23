@@ -59,6 +59,13 @@ Login
 <div class=cartcontainer> 
   <div class="cart content-wrapper">
     <h1>Shopping Cart</h1>
+    {% if plen == 0  %}
+              <tr>
+                  <td colspan="5" style="text-align:center;">You have no products added in your Shopping Cart</td>
+              </tr>
+              
+      {% elif plen > 0 %}
+      {% for product in products %}  
         <table>
           <thead>
               <tr>
@@ -69,12 +76,7 @@ Login
               </tr>
           </thead>
           <tbody>
-            {% if plen == 0  %}
-              <tr>
-                  <td colspan="5" style="text-align:center;">You have no products added in your Shopping Cart</td>
-              </tr>
-              {% elif plen > 0 %}
-              {% for product in products %}
+            
               
               <tr>
                   <td class="img">
@@ -119,14 +121,17 @@ Login
               {% endif %}
           </tbody>
       </table>
+      {% if plen > 0  %}
       <div class="subtotal">
           <span class="text">Subtotal: </span>
           <span class="price">{{ '%0.2f' | format(totals | sum) }} kr</span>
       </div>
+      
       <div class="buttons">
           <input type="submit" value="Update" name="update">
           <a href="{{ url_for('order') }}" ><input type="submit" value="Place Order" name="placeorder"></a>
       </div>
+      {% endif %}
   </div>
 </div>
   

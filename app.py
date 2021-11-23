@@ -222,21 +222,17 @@ def order():
 @app.route('/cart', methods=['GET', 'POST'])
 @login_required
 def shoppingCart():
-   prodQTY = 1
    form = shoppingcartForm()
    products = []
-
+   plen = 0;
    if 'cart' not in session:
-      return 'No things in cart!'
+      return render_template("shoppingcart.html", products=products, plen = 0, form = form)   
    if 'cart' in session:
-      if len(session['cart']) == 0:
-         return 'No things in cart!'    
-      print("SESSIONCART", session['cart'])
       for items in session['cart']:
          print("ITEMS", items)
          products.append(Product.query.filter_by(id=items[0]).first())
-
-   return render_template("shoppingcart.html", products=products, plen = len(products), form = form, sess = session['cart'])   
+      return render_template("shoppingcart.html", products=products, plen = len(session['cart']), form = form, sess = session['cart'])   
+   
 
 
 
