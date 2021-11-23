@@ -9,6 +9,8 @@ Login
 {% endblock %}
 
 {% block content %}
+{% set totals = [] %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,6 +75,7 @@ Login
               </tr>
               {% elif plen > 0 %}
               {% for product in products %}
+              
               <tr>
                   <td class="img">
                       <a href="{{ url_for('get_product',pID= product.id ) }}">
@@ -95,7 +98,7 @@ Login
                       
                       -->
 
-                      <td class="price">&dollar;{{ product.product_price }}</td>
+                      <td class="price">{{ product.product_price }} kr</td>
                       {% for lists in sess %}
                         {% if product.id == lists[0] %}
                         <td> 
@@ -104,8 +107,9 @@ Login
                           <input type="submit" value="update">
                         </form>
                         </td>
-                        <td class="price">&dollar;{{ product.product_price * lists[1] }}</td>
-                        {{ subtot = subtot + (product.product_price * lists[1]) }}
+                        <td class="price">{{ product.product_price * lists[1] }} kr</td>
+                        {% set orderquantity = lists[1] %}
+                        {% if totals.append(product.product_price * orderquantity) %}{% endif %}
                         {% endif %}
                       {% endfor %}
                   </td>
@@ -116,8 +120,8 @@ Login
           </tbody>
       </table>
       <div class="subtotal">
-          <span class="text">Subtotal</span>
-          <span class="price">&dollar; {{ subtot }}</span>
+          <span class="text">Subtotal: </span>
+          <span class="price">{{ '%0.2f' | format(totals | sum) }} kr</span>
       </div>
       <div class="buttons">
           <input type="submit" value="Update" name="update">
