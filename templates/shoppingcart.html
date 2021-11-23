@@ -99,6 +99,7 @@ Login
                         </form>
                         </td>
                         <td class="price">&dollar;{{ product.product_price * lists[1] }}</td>
+                        {{ subtot = subtot + (product.product_price * lists[1]) }}
                         {% endif %}
                       {% endfor %}
                   </td>
@@ -110,7 +111,7 @@ Login
       </table>
       <div class="subtotal">
           <span class="text">Subtotal</span>
-          <span class="price">&dollar; $50</span>
+          <span class="price">&dollar; {{ subtot }}</span>
       </div>
       <div class="buttons">
           <input type="submit" value="Update" name="update">
