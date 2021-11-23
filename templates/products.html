@@ -57,6 +57,7 @@
         <h4>{{ product.product_name }}</h4>
         <p2>{{ product.product_description }}</p2>
         <p>{{ product.product_price }} kr</p>
+        <p>{{ product.product_qty }} Available</p>
         <a href="{{ url_for('quick_add',id= product.id ) }}" class="btn">Add to Cart</a>
       </div>
       {% endfor %} 

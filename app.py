@@ -55,6 +55,7 @@ class Product(db.Model):
     product_price = db.Column(db.Float, index=True)
     product_img = db.Column(db.String(200), index=True)
     product_description = db.Column(db.String(200), index=True)
+    product_qty = db.Column(db.String(200), index=True)
 
 class ActiveOrder(db.Model):
    oID = db.Column(db.Integer, primary_key=True, unique=True)
@@ -193,7 +194,7 @@ def get_product():
    pID = request.args.get('pID')
    print(type(pID))
    prod_id = Product.query.filter_by(id=int(pID)).first()
-   return render_template("product_page.html",prod_id=prod_id)
+   return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty)
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
