@@ -99,7 +99,11 @@ def login():
 
    try:
       if session['username']:
-         return redirect(url_for('address'))
+         user = UserInformation.query.filter_by(id=session['username']).first()
+         if user.dbuserType == 'admin':
+            return render_template('order.html')
+         if user.dbuserType == 'customer':
+            return redirect(url_for('address'))
       
    except KeyError:
       if form.validate_on_submit():
@@ -154,15 +158,25 @@ def get_product():
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
-   new_order = ActiveOrder(UserID= session['username'])
-   db.session.add(new_order)
-   db.session.commit()
-   for item in session['cart']:
-      QP = Product.query.filter_by(id=item[0]).first()
-      new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item[1])
-      db.session.add(new_prodInOrder)
+   testID = int(session['username'])
+   testUser = UserInformation.query.filter_by(id=testID).first()
+   print(testUser)
+   print(testUser.dbCity)
+   print(testUser.dbCountry)
+   if testUser.dbStreet or testUser.dbCity or testUser.dbCountry == None:
+      flash('Please submit your shipping information!')
+      return redirect(url_for('address'))
+
+   else:
+      new_order = ActiveOrder(UserID= session['username'])
+      db.session.add(new_order)
       db.session.commit()
-   session.pop("cart", None)
+      for item in session['cart']:
+         QP = Product.query.filter_by(id=item[0]).first()
+         new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item[1])
+         db.session.add(new_prodInOrder)
+         db.session.commit()
+      session.pop("cart", None)
    return 'Order recived!'
 
 @app.route('/cart', methods=['GET', 'POST'])
