@@ -32,7 +32,9 @@ Login
     
         <nav>
           <ul>
-            <li><a href="">Home</a></li>
+            <li><a href= "{{ url_for('HomePage') }}" >
+              Home
+            </a></li>
             <li><a href="{{ url_for('products') }}">Products</a></li>
             <li><a href="">About</a></li>
             <li><a href="">Contact</a></li>
@@ -74,7 +76,7 @@ Login
                   <td>
                       <a href="{{ url_for('get_product',pID= product.id ) }}">{{ product.product_name }}</a>
                       <br>
-                      <a href="{{ url_for('remove',id= product.id) }}">Remove All</a>
+                      <a href="{{ url_for('remove',id= product.id) }}">Remove</a>
                       
                       
                       <!-- <td><a href="{{ url_for('updatecart', id=product.id) }}"><input type="number" jallaquantity="jallaquantity" min="1" max=10><button type="submit" class="btn">Update</button></a></td>

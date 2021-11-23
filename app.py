@@ -57,14 +57,8 @@ class Product(db.Model):
     product_description = db.Column(db.String(200), index=True)
 
 class ActiveOrder(db.Model):
-   Productid = db.Column(db.Integer, primary_key=True, unique=True)
-   Orderid = db.Column(db.Integer, primary_key=True, unique=True)
-   dbname = db.Column(db.String(80), unique=False, nullable=False)
-   dbLastname = db.Column(db.String(80), unique=False, nullable=False)
-   dbStreet = db.Column(db.String(120), nullable=False)
-   dbCity = db.Column(db.String(120), nullable=False)
-   dbCountry = db.Column(db.String(120), nullable=False)
-   dbUserID = db.Column(db.String(120), nullable=True)
+   oID = db.Column(db.Integer, primary_key=True, unique=True)
+   UserID = db.Column(db.Integer, nullable=False)
 
 class prodInOrder(db.Model):
    Orderid = db.Column(db.Integer, primary_key=True,unique=False)
@@ -190,37 +184,21 @@ def quick_add():
    id = request.args.get('id', '')
    if 'cart' not in session:
         session['cart'] = []
-
+   for items in session['cart']:
+      if items[0] == int(id):
+         items[1] = items[1] + 1
+         session.modified = True
+         return redirect(url_for('shoppingCart'))
+      else:
+         continue
    session['cart'].append([int(id), 1])
    session.modified = True
    print(len(session['cart']))
-   return redirect(url_for('products'))
+   return redirect(url_for('shoppingCart'))
                                              
 if __name__ == '__main__':
    app.run(debug=True)
 
-''' 
-@app.route('/updatecart/<int:code>', methods=['POST', 'GET'])
-def updatecart(code):
-   if 'cart' not in session and len(session['cart']) <= 0:
-      return redirect(url_for('HomePage'))
-   if request.method == "POST":
-      quantity = request.form.get('quantity')
-      jalla = request.form.get('jalla')
-      print("JALLAid", jalla)
-      try:
-         session.modified = True
-         for i in session['cart']:
-            if int(i[0]) == int(jalla):
-               print("JALLAid", jalla)
-               i[1] = int(quantity)
-               print("QUANT", i[1])
-               flash('Cart updated')
-               return redirect(url_for('shoppingCart'))
-      except Exception as e:
-         print(e)
-         return redirect(url_for('HomePage'))
-'''
 
 @app.route('/updatecart',methods=['GET', 'POST'])
 def updatecart():
@@ -242,7 +220,5 @@ def remove():
       print("SessionITEMS", items)
       if int(id) == items[0]:
          session['cart'].remove(items)
-      
-     # session['cart'].remove(items[0])
    session.modified = True
    return redirect(url_for('shoppingCart'))
