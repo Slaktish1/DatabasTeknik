@@ -5,7 +5,7 @@ Register
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/login.css">
+<link rel="stylesheet" href="/static/css/ppage.css">
 {% endblock %}
 
 {% block content %}
@@ -22,18 +22,18 @@ Register
         <nav>
           <ul>
             <li><a href= "{{ url_for('HomePage') }}" >
-              Home
-            </a></li>
-            <li><a href= "{{ url_for('products') }}" >
-              Products
-            </a></li>
-            <li><a href= "{{ url_for('About') }}" >
-              About
-            </a></li>
-            <li><a href= "{{ url_for('Contact') }}" >
-              Contact
-            </a></li>
-            <li><a href="">Account</a></li>
+                Home
+              </a></li>
+              <li><a href= "{{ url_for('products') }}" >
+                Products
+              </a></li>
+              <li><a href= "{{ url_for('About') }}" >
+                About
+              </a></li>
+              <li><a href= "{{ url_for('Contact') }}" >
+                Contact
+              </a></li>
+            <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
         <a href="{{ url_for('shoppingCart') }}"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
@@ -41,19 +41,12 @@ Register
     </div>
 </div>
 
-<!--- Registration page --->
-<div class="login">
-    <div class="regcontainer">
-        <form class="form-signin" method="POST" action="/register">
-            <h2 class="form-signin-heading">Please sign in</h2>
-            {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.username) }}
-            {{ wtf.form_field(form.email) }}
-            {{ wtf.form_field(form.password) }}
-            <button class="btn" type="submit">Register</button>
-        </form>
-    </div>
-  </div>
+<!-- About -->
+<div class="small-container">
+    <p>
+        We are a cool store based out of Sápmi - We have good products
+    </p>
+</div>
 
 
 <!--- Footer --->
