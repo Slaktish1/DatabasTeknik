@@ -1,11 +1,11 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
-Login
+Register
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/login.css">
+<link rel="stylesheet" href="/static/css/ppage.css">
 {% endblock %}
 
 {% block content %}
@@ -22,17 +22,17 @@ Login
         <nav>
           <ul>
             <li><a href= "{{ url_for('HomePage') }}" >
-              Home
-            </a></li>
-            <li><a href= "{{ url_for('products') }}" >
-              Products
-            </a></li>
-            <li><a href= "{{ url_for('About') }}" >
-              About
-            </a></li>
-            <li><a href= "{{ url_for('Contact') }}" >
-              Contact
-            </a></li>
+                Home
+              </a></li>
+              <li><a href= "{{ url_for('products') }}" >
+                Products
+              </a></li>
+              <li><a href= "{{ url_for('About') }}" >
+                About
+              </a></li>
+              <li><a href= "{{ url_for('Contact') }}" >
+                Contact
+              </a></li>
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
@@ -41,19 +41,11 @@ Login
     </div>
 </div>
 
-<!--- Login page --->
-<div class="login">
-  <div class="regcontainer">
-      <form class="form-signin" method="POST" action="/login">
-          <h2 class="form-signin-heading">Please sign in</h2>
-          {{ wtf.form_field(form.username) }}
-          {{ form.hidden_tag() }}
-          {{ wtf.form_field(form.password) }}
-          {{ wtf.form_field(form.remember) }}
-          <button class='btn' type="submit">Sign in</button>
-          <button class='btn'><a href="{{ url_for('register') }}">Register</a></button>
-      </form>
-  </div>
+<!-- About -->
+<div class="small-container">
+    <p>
+        You can contact us by phone at +45 53 13 99 10, send us a mail to SuperShop@Shop.se, or alternatively send physical mail to Väderleden 3C, 976 33, Luleå.
+    </p>
 </div>
 
 

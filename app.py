@@ -74,6 +74,14 @@ def HomePage():
    products = Product.query.all()
    return render_template('HomePage.html', products = products)
 
+@app.route('/About')
+def About():
+   return render_template('About.html')
+
+@app.route('/Contact')
+def Contact():
+   return render_template('Contact.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
    form = RegisterForm()

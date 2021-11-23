@@ -21,14 +21,22 @@ Register
     
         <nav>
           <ul>
-            <li><a href="">Home</a></li>
-            <li><a href="">Products</a></li>
-            <li><a href="">About</a></li>
-            <li><a href="">Contact</a></li>
+            <li><a href= "{{ url_for('HomePage') }}" >
+              Home
+            </a></li>
+            <li><a href= "{{ url_for('products') }}" >
+              Products
+            </a></li>
+            <li><a href= "{{ url_for('About') }}" >
+              About
+            </a></li>
+            <li><a href= "{{ url_for('Contact') }}" >
+              Contact
+            </a></li>
             <li><a href="">Account</a></li>
           </ul>
         </nav>
-        <a href="a"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
+        <a href="{{ url_for('shoppingCart') }}"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
       </div>
     </div>
 </div>
