@@ -67,6 +67,11 @@ class prodInOrder(db.Model):
    productID = db.Column(db.Integer, nullable=False)
    Quantity = db.Column(db.Integer, nullable=False)
    
+class Cart(db.Model):
+   cartUID = db.Column(db.Integer, primary_key=False,unique=False)
+   cartPID = db.Column(db.Integer, nullable=False)
+   cartQuantity = db.Column(db.Integer, nullable=False)
+   cartID = db.Column(db.Integer, primary_key=True,unique=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -203,6 +208,7 @@ def order():
    print(testUser)
    print(testUser.dbCity)
    print(testUser.dbCountry)
+   cartItems = Cart.query.filter_by(cartUID=testID).all()
    if testUser.dbStreet == None or testUser.dbCity == None or testUser.dbCountry == None:
       flash('Please submit your shipping information!')
       return redirect(url_for('address'))
@@ -211,12 +217,12 @@ def order():
       new_order = ActiveOrder(UserID= session['username'])
       db.session.add(new_order)
       db.session.commit()
-      for item in session['cart']:
-         QP = Product.query.filter_by(id=item[0]).first()
-         new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item[1])
+
+      for item in cartItems:
+         QP = Product.query.filter_by(id=item.cartPID).first()
+         new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
          db.session.add(new_prodInOrder)
          db.session.commit()
-      session.pop("cart", None)
    return 'Order recived!'
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -224,14 +230,18 @@ def order():
 def shoppingCart():
    form = shoppingcartForm()
    products = []
-   plen = 0;
-   if 'cart' not in session:
-      return render_template("shoppingcart.html", products=products, plen = 0, form = form)   
-   if 'cart' in session:
-      for items in session['cart']:
-         print("ITEMS", items)
-         products.append(Product.query.filter_by(id=items[0]).first())
-      return render_template("shoppingcart.html", products=products, plen = len(session['cart']), form = form, sess = session['cart'])   
+
+   localcartUID = int(session['username'])
+   print("IDIDIDIDID:", localcartUID)
+   cartITEMS = Cart.query.filter_by(cartUID=localcartUID).all()
+   print("CART: ", cartITEMS)
+   if cartITEMS != None:
+      for items in cartITEMS:
+         print("ITEMS: ", items)
+         products.append(Product.query.filter_by(id = items.cartPID).first())
+      print("PROD: ", products)
+
+   return render_template("shoppingcart.html", products=products, plen = len(products), form = form)  
    
 
 
@@ -240,18 +250,22 @@ def shoppingCart():
 def quick_add():
        
    id = request.args.get('id', '')
-   if 'cart' not in session:
-        session['cart'] = []
-   for items in session['cart']:
-      if items[0] == int(id):
-         items[1] = items[1] + 1
-         session.modified = True
-         return redirect(url_for('shoppingCart'))
-      else:
-         continue
-   session['cart'].append([int(id), 1])
-   session.modified = True
-   print(len(session['cart']))
+   testID = int(session['username'])
+   cartItems = Cart.query.filter_by(cartUID=testID).all()
+   if len(cartItems) != 0:
+      print('HIIII')
+      for items in cartItems:
+         if items.cartPID  == int(id):
+            print('fjkshdufklh',items.cartPID)
+            items.cartQuantity = items.cartQuantity + 1
+            print('quantity', items.cartQuantity)
+            return redirect(url_for('shoppingCart'))
+         else:
+            continue
+      new_prodInCart = Cart(cartUID = testID, cartPID = id, cartQuantity = 1)
+      print('LOOOOOOK',new_prodInCart)
+      db.session.add(new_prodInCart)
+      db.session.commit()
    return redirect(url_for('shoppingCart'))
                                              
 if __name__ == '__main__':
@@ -262,11 +276,13 @@ if __name__ == '__main__':
 def updatecart():
    id = request.args.get('code')
    jallaquantity = request.form['jallaquantity']
+   testID = int(session['username'])
+   cartItems = Cart.query.filter_by(cartUID=testID).all()
    print("JALLAQUANT", jallaquantity)
    print("JALLAIDNEW", id)
-   for items in session['cart']:
-      if items[0] == int(id):
-         items[1] = int(jallaquantity)
+   for items in cartItems:
+      if items.cartPID == int(id):
+         items.cartPID = int(jallaquantity)
 
    session.modified = True
    return redirect(url_for('shoppingCart'))
