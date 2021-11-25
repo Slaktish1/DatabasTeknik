@@ -99,24 +99,6 @@
   </div>
 </div>
 
-<!--- Featured products --->
-
-<div class="small-container">
-  <div class="title">    
-  <p>MENS</p>
-  <p2>SHOP</p2>
-  </div>
-  {% for product in products %}
-    <div class="row">
-      <div class="col-4"> 
-        <img src="static/img/{{ product.product_img }}">
-        <h4>{{ product.product_name }}</h4>
-        <p>{{ product.product_price }}</p>
-        <p2>{{ product.product_description }}</p2>
-      </div>
-    </div>
-</div>
-  {% endfor %}
 <!--- Footer --->
 
 <div class="footer">

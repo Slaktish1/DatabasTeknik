@@ -55,8 +55,8 @@ class Product(db.Model):
     product_price = db.Column(db.Float, index=True)
     product_img = db.Column(db.String(200), index=True)
     product_description = db.Column(db.String(200), index=True)
-    product_qty = db.Column(db.String(200), index=True)
-
+    product_qty = db.Column(db.Integer, index=True)
+    
 class ActiveOrder(db.Model):
    oID = db.Column(db.Integer, primary_key=True, unique=True)
    UserID = db.Column(db.Integer, nullable=False)
@@ -205,24 +205,33 @@ def get_product():
 def order():
    testID = int(session['username'])
    testUser = UserInformation.query.filter_by(id=testID).first()
-   print(testUser)
-   print(testUser.dbCity)
-   print(testUser.dbCountry)
    cartItems = Cart.query.filter_by(cartUID=testID).all()
+   
    if testUser.dbStreet == None or testUser.dbCity == None or testUser.dbCountry == None:
       flash('Please submit your shipping information!')
       return redirect(url_for('address'))
 
    else:
-      new_order = ActiveOrder(UserID= session['username'])
-      db.session.add(new_order)
-      db.session.commit()
-
       for item in cartItems:
          QP = Product.query.filter_by(id=item.cartPID).first()
-         new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
-         db.session.add(new_prodInOrder)
-         db.session.commit()
+         if QP.product_qty >= item.cartQuantity:
+            new_order = ActiveOrder(UserID= session['username'])
+            db.session.add(new_order)
+            db.session.commit()
+            newQTY = QP.product_qty - item.cartQuantity
+            QP.product_qty = newQTY
+            new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
+            db.session.add(new_prodInOrder)
+            db.session.commit()
+         elif QP.product_qty == 0:
+            flash('The item is out of stock.')
+            return redirect(url_for('shoppingCart'))
+         elif QP.product_qty < item.cartQuantity:
+            flash('The specified quantity for the item is not available. Not enough stock.')
+            return redirect(url_for('shoppingCart'))
+         
+      Cart.query.filter_by(cartUID = testID).delete()
+      db.session.commit()
    return 'Order recived!'
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -232,16 +241,14 @@ def shoppingCart():
    products = []
 
    localcartUID = int(session['username'])
-   print("IDIDIDIDID:", localcartUID)
    cartITEMS = Cart.query.filter_by(cartUID=localcartUID).all()
-   print("CART: ", cartITEMS)
-   if cartITEMS != None:
+   if cartITEMS != False:
       for items in cartITEMS:
          print("ITEMS: ", items)
          products.append(Product.query.filter_by(id = items.cartPID).first())
       print("PROD: ", products)
 
-   return render_template("shoppingcart.html", products=products, plen = len(products), form = form)  
+   return render_template("shoppingcart.html", products=products, carts=cartITEMS, plen = len(products), form = form)  
    
 
 
@@ -252,20 +259,21 @@ def quick_add():
    id = request.args.get('id', '')
    testID = int(session['username'])
    cartItems = Cart.query.filter_by(cartUID=testID).all()
+   
    if len(cartItems) != 0:
-      print('HIIII')
       for items in cartItems:
+         product = Product.query.filter_by(id=items.cartPID).first()
          if items.cartPID  == int(id):
             print('fjkshdufklh',items.cartPID)
             items.cartQuantity = items.cartQuantity + 1
-            print('quantity', items.cartQuantity)
+            db.session.commit()
             return redirect(url_for('shoppingCart'))
          else:
             continue
-      new_prodInCart = Cart(cartUID = testID, cartPID = id, cartQuantity = 1)
-      print('LOOOOOOK',new_prodInCart)
-      db.session.add(new_prodInCart)
-      db.session.commit()
+   new_prodInCart = Cart(cartUID = testID, cartPID = id, cartQuantity = 1)
+   db.session.add(new_prodInCart)
+   db.session.commit()
+
    return redirect(url_for('shoppingCart'))
                                              
 if __name__ == '__main__':
@@ -278,21 +286,21 @@ def updatecart():
    jallaquantity = request.form['jallaquantity']
    testID = int(session['username'])
    cartItems = Cart.query.filter_by(cartUID=testID).all()
-   print("JALLAQUANT", jallaquantity)
-   print("JALLAIDNEW", id)
    for items in cartItems:
       if items.cartPID == int(id):
-         items.cartPID = int(jallaquantity)
+         items.cartQuantity = int(jallaquantity)
+         db.session.commit()
 
-   session.modified = True
    return redirect(url_for('shoppingCart'))
 
 @app.route('/remove',methods=['GET'])
 def remove():
-   id = request.args.get('id', '')
-   for items in session['cart']:
-      print("SessionITEMS", items)
-      if int(id) == items[0]:
-         session['cart'].remove(items)
-   session.modified = True
+   Rid = request.args.get('id', '')
+   testID = int(session['username'])
+   Rid = int(Rid)
+   cartItems = Cart.query.filter_by(cartUID=testID).all()
+   for item in cartItems:
+      if Rid == item.cartPID:
+         Cart.query.filter_by(cartPID=Rid).delete()
+         db.session.commit()
    return redirect(url_for('shoppingCart'))
