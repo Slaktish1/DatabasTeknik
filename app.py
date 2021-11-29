@@ -39,6 +39,13 @@ class AccountForm(FlaskForm):
 class shoppingcartForm(FlaskForm):
    quantity = IntegerField('', validators=[InputRequired()], widget=NumberInput(), default=1)
 
+class addingForm(FlaskForm):
+   productName = StringField('productName', validators=[InputRequired(), Length(max=50)])
+   productPrice = StringField('productPrice', validators=[InputRequired(), Length(max=50)])
+   productImg = StringField('productImg', validators=[InputRequired(), Length(max=50)])
+   productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
+   productQty = IntegerField('productQty', validators=[InputRequired()], widget=NumberInput(), default=1)
+
 class UserInformation(UserMixin, db.Model):
    id = db.Column(db.Integer, primary_key=True, unique=True)
    dbuserType = db.Column(db.String(120), nullable=False)
@@ -257,14 +264,17 @@ def shoppingCart():
 def quick_add():
        
    id = request.args.get('id', '')
-   testID = int(session['username'])
+   try:
+      testID = int(session['username'])
+   except:
+      return redirect(url_for('login'))
+   print("TESTTESTTESTTEST",testID)
    cartItems = Cart.query.filter_by(cartUID=testID).all()
    
    if len(cartItems) != 0:
       for items in cartItems:
          product = Product.query.filter_by(id=items.cartPID).first()
          if items.cartPID  == int(id):
-            print('fjkshdufklh',items.cartPID)
             items.cartQuantity = items.cartQuantity + 1
             db.session.commit()
             return redirect(url_for('shoppingCart'))
@@ -304,3 +314,7 @@ def remove():
          Cart.query.filter_by(cartPID=Rid).delete()
          db.session.commit()
    return redirect(url_for('shoppingCart'))
+
+@app.route('/addProd', methods=['GET', 'POST'])
+def addProd():
+   form = addingForm()

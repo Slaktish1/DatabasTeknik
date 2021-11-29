@@ -1,0 +1,93 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Login
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
+
+{% block content %}
+  <!--- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="navbar"> 
+        <div class="logo">
+          <a href= "{{ url_for('HomePage') }}" >
+            <img src="static/img/Logo.png">
+          </a>
+        </div>
+    
+        <nav>
+          <ul>
+            <li><a href= "{{ url_for('HomePage') }}" >
+              Home
+            </a></li>
+            <li><a href= "{{ url_for('products') }}" >
+              Products
+            </a></li>
+            <li><a href= "{{ url_for('About') }}" >
+              About
+            </a></li>
+            <li><a href= "{{ url_for('Contact') }}" >
+              Contact
+            </a></li>
+            <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
+          </ul>
+        </nav>
+        <a href="{{ url_for('shoppingCart') }}"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
+      </div>
+    </div>
+</div>
+
+<!--- Login page --->
+<div class="login">
+  <div class="regcontainer">
+      <form class="form-signin" method="POST" action="">
+          <h2 class="form-signin-heading">Please sign in</h2>
+          {{ wtf.form_field(form.productName) }}
+          {{ wtf.form_field(form.productPrice) }}
+          {{ wtf.form_field(form.productImg) }}
+          {{ wtf.form_field(form.productDesc) }}
+          {{ wtf.form_field(form.productQty) }}
+          <button class='btn' type="submit">Sign in</button>
+      </form>
+
+ 
+<h2>You need to supply Address Information!</h2>
+  </div>
+</div>
+
+
+<!--- Footer --->
+
+<div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="footer-col-1">
+        <img src="static/img/Logo.png">
+        <p>You are what you buy. So make sure only to buy good products.</p>
+      </div>
+      <div class="footer-col-2">
+
+      </div>
+      <div class="footer-col-3">
+        <h3>Want to visit our physical store?</h3>
+        <p>We have physical stores are located at:</p>
+        <p>Butiksgränd 1, Luleå, Sweden</p>
+        <p>Ananasgatan 16, Örebro, Sweden</p>
+        <p>Vattenmelonsvägen 2, Malmö, Sweden</p>
+      </div>
+      <div class="footer-col-4">
+        <h3>Contact Information</h3>
+        <p>+46 123 45 67</p>
+        <p>Campusvägen 1</p>
+        <p>977 00, Luleå - Sweden</p>
+        <p>support@supershop.com</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
