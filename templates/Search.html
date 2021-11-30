@@ -5,7 +5,7 @@ Login
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/login.css">
+<link rel="stylesheet" href="/static/css/ppage.css">
 {% endblock %}
 
 {% block content %}
@@ -41,21 +41,31 @@ Login
     </div>
 </div>
 
-<!--- add prod --->
+<!--- Login page --->
 <div class="login">
-  <div class="regcontainer">
-      <form class="form-signin" method="POST" action="/addProd">
-          <h2 class="form-signin-heading">ADD PROD</h2>
-          {{ form.csrf_token }}
-          {{ wtf.form_field(form.productName) }}
-          {{ wtf.form_field(form.productPrice) }}
-          {{ wtf.form_field(form.productImg) }}
-          {{ wtf.form_field(form.productDesc) }}
-          {{ wtf.form_field(form.productQty) }}
-          <button class='btn' type="submit">ADD</button>
+    <form action="{{ url_for('search') }}" method="get">
+        <input type="search" placeholder="Search" name="sTerm">
+        <button type="submit">Search</button>
       </form>
-
-
+</div>
+{% if Lresults > 0 %}
+<div class="col_container"> 
+    {% for product in results %}
+    <div class="item">
+      <a href="{{ url_for('get_product',pID= product.id ) }}"> <img src="static/img/{{ product.product_img }}" width="300"> </a>
+      <h4>{{ product.product_name }}</h4>
+      <p2>{{ product.product_description }}</p2>
+      <p>{{ product.product_price }} kr</p>
+      <p>{{ product.product_qty }} Available</p>
+      <a href="{{ url_for('quick_add',id= product.id ) }}" class="btn">Add to Cart</a>
+    </div>
+    {% endfor %} 
+    {% endif %} 
+  </div>
+</div>     
+{% if Lresults == 0 %}
+<h4>SRY NO RESULTS</h4>
+{% endif %} 
 <!--- Footer --->
 
 <div class="footer">

@@ -1,14 +1,16 @@
+import re
 from typing import Type
 from flask import Flask, render_template, redirect, url_for, session, flash, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, PasswordField, BooleanField, EmailField
+from werkzeug.utils import send_file
+from wtforms import StringField, PasswordField, BooleanField, EmailField, FloatField, RadioField,TextAreaField
 from wtforms.fields.numeric import IntegerField
 from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from wtforms.widgets import NumberInput
+from wtforms.widgets import NumberInput, TextArea
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\x13\xb2\xe4E\x0e\x03\x9da\x98\x8dg k\xa5\xa3\n\xf5!H\x08n\xc9\xabl'
@@ -41,10 +43,16 @@ class shoppingcartForm(FlaskForm):
 
 class addingForm(FlaskForm):
    productName = StringField('productName', validators=[InputRequired(), Length(max=50)])
-   productPrice = StringField('productPrice', validators=[InputRequired(), Length(max=50)])
+   productPrice = IntegerField('productPrice', validators=[InputRequired()], widget=NumberInput(), default=1000)
    productImg = StringField('productImg', validators=[InputRequired(), Length(max=50)])
    productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
    productQty = IntegerField('productQty', validators=[InputRequired()], widget=NumberInput(), default=1)
+
+class supportForm(FlaskForm):
+   title = StringField('Title', validators=[InputRequired(), Length(min=4 , max=40)])
+   description = StringField('Description', validators=[InputRequired()], widget=TextArea())
+   category = RadioField('Category',validators =[InputRequired()], choices=[('Help'), ('Return')], default='1')
+   oID = RadioField('oID',validators =[InputRequired('Choose a order')], coerce=int)
 
 class UserInformation(UserMixin, db.Model):
    id = db.Column(db.Integer, primary_key=True, unique=True)
@@ -63,14 +71,17 @@ class Product(db.Model):
     product_img = db.Column(db.String(200), index=True)
     product_description = db.Column(db.String(200), index=True)
     product_qty = db.Column(db.Integer, index=True)
+    product_tag = db.Column(db.String(64), index = True)
     
 class ActiveOrder(db.Model):
    oID = db.Column(db.Integer, primary_key=True, unique=True)
+   Total = db.Column(db.String(120), nullable=False)
    UserID = db.Column(db.Integer, nullable=False)
    Status = db.Column(db.String(120), nullable=True, default='Ordered')
 
 class prodInOrder(db.Model):
-   Orderid = db.Column(db.Integer, primary_key=True,unique=False)
+   IDK_ID = db.Column(db.Integer, primary_key=True, unique=True) 
+   Orderid = db.Column(db.Integer, primary_key=False,unique=False)
    productID = db.Column(db.Integer, nullable=False)
    Quantity = db.Column(db.Integer, nullable=False)
    
@@ -80,14 +91,19 @@ class Cart(db.Model):
    cartQuantity = db.Column(db.Integer, nullable=False)
    cartID = db.Column(db.Integer, primary_key=True,unique=False)
 
+class Support(db.Model):
+   ticketID = db.Column(db.Integer, primary_key=True,unique=True)
+   ticketUID = db.Column(db.Integer, nullable=False)
+   ticketOID = db.Column(db.Integer, nullable=False)
+   ticketTitle = db.Column(db.String(120), nullable=False)
+   ticketDesc = db.Column(db.String(120), nullable=False)
+   ticketCategory = db.Column(db.String(120), nullable=False)
+
 @login_manager.user_loader
 def load_user(user_id):
    return UserInformation.query.get(int(user_id))
 
-@app.route('/')
-def HomePage():
-   products = Product.query.all()
-   return render_template('HomePage.html', products = products)
+
 
 @app.route('/About')
 def About():
@@ -211,9 +227,10 @@ def get_product():
 @app.route('/order', methods=['GET', 'POST'])
 def order():
    testID = int(session['username'])
+   total = request.args.get('Total')
    testUser = UserInformation.query.filter_by(id=testID).first()
    cartItems = Cart.query.filter_by(cartUID=testID).all()
-   
+   look = 0
    if testUser.dbStreet == None or testUser.dbCity == None or testUser.dbCountry == None:
       flash('Please submit your shipping information!')
       return redirect(url_for('address'))
@@ -222,14 +239,17 @@ def order():
       for item in cartItems:
          QP = Product.query.filter_by(id=item.cartPID).first()
          if QP.product_qty >= item.cartQuantity:
-            new_order = ActiveOrder(UserID= session['username'])
-            db.session.add(new_order)
-            db.session.commit()
-            newQTY = QP.product_qty - item.cartQuantity
-            QP.product_qty = newQTY
-            new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
-            db.session.add(new_prodInOrder)
-            db.session.commit()
+            if look == 0:    
+               new_order = ActiveOrder(UserID= session['username'], Total = total)
+               db.session.add(new_order)
+               db.session.commit()
+               look = 1
+            if look == 1:
+               newQTY = QP.product_qty - item.cartQuantity
+               QP.product_qty = newQTY
+               new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
+               db.session.add(new_prodInOrder)
+               db.session.commit()
          elif QP.product_qty == 0:
             flash('The item is out of stock.')
             return redirect(url_for('shoppingCart'))
@@ -318,3 +338,60 @@ def remove():
 @app.route('/addProd', methods=['GET', 'POST'])
 def addProd():
    form = addingForm()
+   if form.validate_on_submit():
+      if Product.query.filter_by(product_name=form.productName.data).first():
+         print('IT exist')
+         prod = Product.query.filter_by(product_name=form.productName.data).first()
+         prod.product_price = float(form.productPrice.data)
+         prod.product_img = form.productImg.data
+         prod.product_description = form.productDesc.data
+         prod.product_qty = form.productQty.data
+         db.session.commit()
+         return redirect(url_for('address'))
+      else:
+         print('Does not exist')
+         new_prod = Product(product_name = form.productName.data, product_price = float(form.productPrice.data), product_img = form.productImg.data, product_description = form.productDesc.data , product_qty = form.productQty.data)
+         db.session.add(new_prod)
+         db.session.commit()
+         return redirect(url_for('address'))
+   return render_template("addProd.html", form = form)
+
+@app.route('/seeOrders', methods=['GET', 'POST'])
+def seeOrders():
+   oID = request.args.get('oID', '')
+   oID = int(oID)
+   orders = prodInOrder.query.filter_by(Orderid=oID).all()
+   total = ActiveOrder.query.filter_by(oID=oID).first()
+   total = total.Total
+   print('LOOOOOOKKKKKK',orders)
+   prods =  Product.query.all()
+   return render_template("Orders.html", orders = orders, prods = prods, oID = oID,Total = total)
+
+@app.route('/support', methods=['GET', 'POST'])
+def support():
+   form = supportForm()
+   testID = int(session['username'])
+   form.oID.choices = [(items.oID) for items in ActiveOrder.query.filter_by(UserID=testID).all()]
+   if form.validate_on_submit():
+      new_ticket = Support(ticketUID = testID, ticketOID = int(form.oID.data), ticketTitle = str(form.title.data), ticketDesc = str(form.description.data) , ticketCategory = str(form.category.data))
+      db.session.add(new_ticket)
+      db.session.commit()
+      return redirect(url_for('address'))
+   return render_template("Support.html", form = form)
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+   sTerm = request.args.get('sTerm')
+   prods =  Product.query.all()
+   name = [items for items in prods if str(sTerm) in items.product_name]  
+   tag = [items for items in prods if str(sTerm) in items.product_tag] 
+   new = set(tag) - set(name)
+   res1 = name + list(new)
+   desc = [items for items in prods if str(sTerm) in items.product_description]
+   new2 = set(desc) - set(res1)
+   results = res1 + list(new2)
+   return render_template("Search.html", results = results, Lresults = len(results))
+
+@app.route('/')
+def HomePage():
+   return render_template('HomePage.html')

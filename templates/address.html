@@ -91,9 +91,12 @@ Register
 
 <!-- Account page for ADMINS -->
 {% if UT == 'admin' %}
+
+</a></li>
 <div class="small-container">
   <div class="row">
     <div class="col-4">
+      
       <h2> ADMIN VIEW</h2>
       <p> Logged in as: {{ Name }} </p>
       <p> Current street: {{ Street }} </p>
@@ -101,12 +104,14 @@ Register
       <p> Current country: {{ Country }} </p>
       <p> You are a: {{ UT }} </p>  
       <button class='btn2'><a href="{{ url_for('logout') }}"> Sign Out </a></button>
+      <button class='btn2'><a href="{{ url_for('addProd') }}"> Add/Update Product </a></button>
+
     </div>
     {% if Order %}
     <div class="col-4">
       <h2>Order status:</h2>
       {% for OL in Order%}
-      <div class="admincontainer"><a href= "{{ url_for('address') }}" ><p>Order number: #{{ OL.oID }}</p></a></div>
+      <div class="admincontainer"><a href= "{{ url_for('seeOrders',oID= OL.oID) }}" ><p>Order number: #{{ OL.oID }}</p></a></div>
       <h4>Status: {{ OL.Status }}</h4>
       {% endfor %}
       {% endif %}

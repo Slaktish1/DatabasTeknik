@@ -41,19 +41,21 @@ Login
     </div>
 </div>
 
-<!--- add prod --->
+<!--- See Orders --->
 <div class="login">
   <div class="regcontainer">
-      <form class="form-signin" method="POST" action="/addProd">
-          <h2 class="form-signin-heading">ADD PROD</h2>
-          {{ form.csrf_token }}
-          {{ wtf.form_field(form.productName) }}
-          {{ wtf.form_field(form.productPrice) }}
-          {{ wtf.form_field(form.productImg) }}
-          {{ wtf.form_field(form.productDesc) }}
-          {{ wtf.form_field(form.productQty) }}
-          <button class='btn' type="submit">ADD</button>
-      </form>
+    <h4>Order: {{ oID }}</h4>
+    {% for OL in orders%}  
+        {% for items in prods%}
+            {% if items.id == OL.productID %}
+            <h5>{{ items.product_name }}</h5>
+                <p style="color:black">{{ items.product_price }} kr</p>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <h4>Total: {{ Total }} Kr</h4>
+  </div>
+</div>
 
 
 <!--- Footer --->

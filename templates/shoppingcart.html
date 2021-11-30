@@ -91,16 +91,6 @@ Login
                           <br>
                           <a href="{{ url_for('remove',id= product.id) }}">Remove</a>
                           
-                          
-                          <!-- <td><a href="{{ url_for('updatecart', id=product.id) }}"><input type="number" jallaquantity="jallaquantity" min="1" max=10><button type="submit" class="btn">Update</button></a></td>
-                          -->
-                          
-
-                          <!-- 
-                          <input value={{product.id}} type=hidden name="jalla">
-                          <form action="{{ url_for('updatecart', code=product.id) }}" method="post">
-                          
-                          -->
 
                           <td class="price">{{ product.product_price }} kr</td>
                             <td> 
@@ -128,7 +118,7 @@ Login
             {% endif %}
 
         <div class="buttons">
-            <a href="{{ url_for('order') }}" ><input type="submit" value="Place Order" name="placeorder"></a>
+            <a href="{{ url_for('order', Total = '%0.2f' | format(totals | sum))}}" ><input type="submit" value="Place Order" name="placeorder"></a>
         </div>
   </div>
 </div>

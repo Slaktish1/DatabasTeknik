@@ -41,19 +41,27 @@ Login
     </div>
 </div>
 
-<!--- add prod --->
+<!--- Login page --->
 <div class="login">
   <div class="regcontainer">
-      <form class="form-signin" method="POST" action="/addProd">
-          <h2 class="form-signin-heading">ADD PROD</h2>
+      <form class="form-signin" method="POST" action="/support">
+          <h2 class="form-signin-heading">Please Enter The Following Information</h2>
           {{ form.csrf_token }}
-          {{ wtf.form_field(form.productName) }}
-          {{ wtf.form_field(form.productPrice) }}
-          {{ wtf.form_field(form.productImg) }}
-          {{ wtf.form_field(form.productDesc) }}
-          {{ wtf.form_field(form.productQty) }}
-          <button class='btn' type="submit">ADD</button>
+          {{form.title.label }}
+          <br>
+          {{form.title }}
+          <br>
+          {{form.description.label}}
+          <br>
+          {{form.description(rows='10',cols='50')}}
+          {{ wtf.form_field(form.category) }}
+          <div>Please choose the ordernumber the suport ticket is about</div>
+          {{ wtf.form_field(form.oID) }}
+          <button class='btn' type="submit">Submit</button>
       </form>
+
+  </div>
+</div>
 
 
 <!--- Footer --->

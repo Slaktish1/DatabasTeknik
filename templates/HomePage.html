@@ -34,10 +34,15 @@
             <li><a href= "{{ url_for('Contact') }}" >
               Contact
             </a></li>
+            <li><a href= "{{ url_for('support') }}" >
+              Support
+            </a></li>
+            <li><a href="{{ url_for('search') }}"><img src="static/img/search.png" width="35px" height="35px"></a></li>
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
         <a href="{{ url_for('shoppingCart') }}"> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
+        
       </div>
     </div>
   
