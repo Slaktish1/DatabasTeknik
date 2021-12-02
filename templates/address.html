@@ -75,19 +75,17 @@ Register
   </div>
 </div>
 {% if Order %}
-      <div class="col-4">
-        <h2>Order status:</h2>
-        {% for OL in Order%}
-        <h4>Order number: #{{ OL.oID }}</h4>
-        <h4>Status: {{ OL.Status }}</h4>
-        <h4>{{ products[loop.index0].product_name }}</h4>
-        <p2>{{ products[loop.index0].product_description }}</p2>
-        <p>{{ products[loop.index0].product_price }} kr</p>
-   
-        {% endfor %}
-        {% endif %}
-      </div>
-{% endif %}
+    <div class="col-4">
+      <h2>Order status:</h2>
+      {% for OL in Order%}
+      <div class="admincontainer"><a href= "{{ url_for('seeOrders',oID= OL.oID) }}" ><p>Order number: #{{ OL.oID }}</p></a></div>
+      <h4>Status: {{ OL.Status }}</h4>
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% endif %}
+
+
 
 <!-- Account page for ADMINS -->
 {% if UT == 'admin' %}

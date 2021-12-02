@@ -1,11 +1,11 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
-Product page
+Login
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/css/ppage.css">
+<link rel="stylesheet" href="/static/css/login.css">
 {% endblock %}
 
 {% block content %}
@@ -36,53 +36,32 @@ Product page
             <li><a href="{{ url_for('login') }}"><img src="static/img/avatar.png" width="35px" height="35px"></a></li>
           </ul>
         </nav>
-        <a href="{{ url_for('shoppingCart') }}"> <img src="static/img/ShoppingCart.png" width="35px" height="35px"> </a>
+        <a href="{{ url_for('shoppingCart') }}"><img src="static/img/ShoppingCart.png" width="35px" height="35px"></a>
       </div>
     </div>
+</div>
+
+<!--- Review page --->
+<div class="review">
+    <form class="reviewSubmit" method="POST" action="/review">
+      <h1>Submit your review</h1>
+      {{form.csrf_token}}
+      {{form.Review.label}}
+      <br>
+        {{form.Review(rows='10',cols='50')}}
+      <br>
+      {{form.ReviewRating.label}}
+      <br>
+        {{form.ReviewRating}}
+      <br>
+      <!-- <a href="{{ url_for('review', pID = prod_id.id) }}" class="btn">Submit review</a> -->
+      <button class='btn' type="submit" name = pID2 value = {{prod_id.id}}>Submit review</button>
+    </form>
   </div>
 
-  <!-- Body -->
 
-  <div class="offer">
-    <div class="small-container">
-      <div class="row">
-        <div class="col-2">
-          <img src="static/img/{{ prod_id.product_img }}">
-        </div>
-        <div class="col-2">
-          <h1>{{ prod_id.product_name }}</h1>
-          
-          <p>{{ prod_id.product_description }}</p>
+<!--- Footer --->
 
-          <p>Amount in stock: {{ product_qty }}</p>
-        
-        <div class="smallrow">
-          <h1>{{ prod_id.product_price }} kr</h1>
-          <a href="{{ url_for('quick_add',id= prod_id.id ) }}" class="btn">Add to Cart</a>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="userreviews">
-    <p>Hello this is the reviews from other customers!</p>
-    <div class="reviewcontainer">
-      <h4>Order: {{ oID }}</h4>
-      {% for OL in orders%}  
-          {% for items in prods%}
-              {% if items.id == OL.productID %}
-              <h5>{{ items.product_name }}</h5>
-                  <p style="color:black">{{ items.product_price }} kr</p>
-                  <a href="{{ url_for('review', pID = items.id) }}" style=color:tomato>Leave a review!</a>
-              {% endif %}
-          {% endfor %}
-      {% endfor %}
-      <h4>Total: {{ Total }} Kr</h4>
-    </div>
-  </div>
-  
-  <!-- Footer -->
 <div class="footer">
   <div class="container">
     <div class="row">
@@ -110,4 +89,5 @@ Product page
     </div>
   </div>
 </div>
+
 {% endblock %}

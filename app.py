@@ -99,6 +99,17 @@ class Support(db.Model):
    ticketDesc = db.Column(db.String(120), nullable=False)
    ticketCategory = db.Column(db.String(120), nullable=False)
 
+class ProductReviews(db.Model):
+   reviewID = db.Column(db.Integer, primary_key=True,unique=True)
+   product_id = db.Column(db.Integer, nullable=False)
+   user_id = db.Column(db.Integer, nullable=False)
+   review_text = db.Column(db.String(4000), nullable=False)
+   Rating = db.Column(db.Integer, nullable=False)
+
+class ReviewForm(FlaskForm):
+   Review = StringField('What do you think of the product?', validators=[InputRequired()], widget=TextArea())
+   ReviewRating = RadioField('What would you rate the product?', choices = ["1","2","3","4","5"], validators = [InputRequired()])
+
 @login_manager.user_loader
 def load_user(user_id):
    return UserInformation.query.get(int(user_id))
@@ -217,12 +228,38 @@ def products():
    products = Product.query.all()
    return render_template("products.html",title="Products",products=products)
 
-@app.route('/product')
+@app.route('/product', methods=['GET', 'POST'])
 def get_product():
    pID = request.args.get('pID')
    print(type(pID))
    prod_id = Product.query.filter_by(id=int(pID)).first()
+
+   customerReviews = ProductReviews.query.all()
+   print('BIG REVIEWS!!!!!',customerReviews)
+   for review in customerReviews:
+      customerReviews = customerReviews + Product.query.filter_by(id=review.reviewID).all()
+
+   for user in customerReviews:
+      userID = UserInformation.query.filter_by(id=user.user_id).first()
+
+
    return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty)
+
+@app.route('/review', methods=['GET', 'POST'])
+def review():
+   userID = int(session['username'])
+   form = ReviewForm()
+   pID = request.args.get('pID')
+   pID2 = request.form.get('pID2')
+   print(pID2)
+   if form.validate_on_submit():
+      print("VALID!!! PRODUCT REVIEW")
+      new_review = ProductReviews(product_id = int(pID2), user_id = userID, review_text = str(form.Review.data), Rating = int(form.ReviewRating.data))
+      db.session.add(new_review)
+      db.session.commit()
+      return redirect(url_for('address'))
+   prod_id = Product.query.filter_by(id=int(pID)).first()
+   return render_template("review.html", form = form, prod_id = prod_id)
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
