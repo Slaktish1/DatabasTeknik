@@ -47,7 +47,10 @@ class addingForm(FlaskForm):
    productImg = StringField('productImg', validators=[InputRequired(), Length(max=50)])
    productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
    productQty = IntegerField('productQty', validators=[InputRequired()], widget=NumberInput(), default=1)
-
+   productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
+   productQty = IntegerField('productQty', validators=[InputRequired()],)
+   productTag = StringField('productTag', validators=[InputRequired(), Length(max=64)])
+   productCategory = StringField('productCategory', validators=[InputRequired(), Length(max=64)])
 class supportForm(FlaskForm):
    title = StringField('Title', validators=[InputRequired(), Length(min=4 , max=40)])
    description = StringField('Description', validators=[InputRequired()], widget=TextArea())
@@ -245,7 +248,6 @@ def get_product():
          users = users + [UserInformation.query.filter_by(id=items.user_id).first()]
       if items.user_id not in visited_users:
              visited_users =  visited_users + [items.user_id]
-   print('KOLLLLLLLAAAA', users)
    return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty, customerReviews = customerReviews, users = users )
 
 @app.route('/review', methods=['GET', 'POST'])
