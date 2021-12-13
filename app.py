@@ -239,16 +239,10 @@ def get_product():
    print(type(pID))
    prod_id = Product.query.filter_by(id=int(pID)).first()
 
-   customerReviews = ProductReviews.query.all()
+   customerReviews = ProductReviews.query.filter_by(product_id = pID).all()
    print('BIG REVIEWS!!!!!',customerReviews)
-   for review in customerReviews:
-      customerReviews = customerReviews + Product.query.filter_by(id=review.reviewID).all()
 
-   for user in customerReviews:
-      userID = UserInformation.query.filter_by(id=user.user_id).first()
-
-
-   return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty)
+   return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty, customerReviews = customerReviews)
 
 @app.route('/review', methods=['GET', 'POST'])
 def review():
@@ -427,6 +421,7 @@ def search():
    prods =  Product.query.all()
    name = [items for items in prods if str(sTerm) in items.product_name]  
    tag = [items for items in prods if str(sTerm) in items.product_tag] 
+   cat = [items for items in prods if str(sTerm) in items.product_cat] 
    new = set(tag) - set(name)
    res1 = name + list(new)
    desc = [items for items in prods if str(sTerm) in items.product_description]
