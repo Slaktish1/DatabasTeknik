@@ -389,11 +389,13 @@ def addProd():
          prod.product_img = form.productImg.data
          prod.product_description = form.productDesc.data
          prod.product_qty = form.productQty.data
+         prod.product_tag = form.productTag.data
+         prod.product_category = form.productCategory.data
          db.session.commit()
          return redirect(url_for('address'))
       else:
          print('Does not exist')
-         new_prod = Product(product_name = form.productName.data, product_price = float(form.productPrice.data), product_img = form.productImg.data, product_description = form.productDesc.data , product_qty = form.productQty.data)
+         new_prod = Product(product_name = form.productName.data, product_price = float(form.productPrice.data), product_img = form.productImg.data, product_description = form.productDesc.data , product_qty = form.productQty.data, product_tag = form.productTag.data, product_category = form.productCategory.data)
          db.session.add(new_prod)
          db.session.commit()
          return redirect(url_for('address'))

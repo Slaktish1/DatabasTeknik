@@ -62,34 +62,25 @@ Product page
         </div>
         <div class="userreviews">
           <p>Hello this is the reviews from other customers!</p>
-          
-            {% for review in customerReviews %}
-            <div class="reviewcontainer">
+          <div class="reviewcontainer">
+            {% for review in customerReviews %}  
+                    {% for us in users%}  
+                        {%if us.id == review.user_id%}
+                        <h4>{{us.dbname}}</h4>
+                        {% endif %}        
+                      {% endfor %}
                     <h5>{{ review.review_text }}</h5>
                     <h5>{{ review.Rating }} / 5</h5>
-            </div>
+                   
             {% endfor %}
+          </div>
         </div>
       </div>
       </div>
     </div>
   </div>
 
-  <div class="userreviews">
-    <p>Hello this is the reviews from other customers!</p>
-    <div class="reviewcontainer">
-      {% for review in customerReviews %}  
-              {% for us in users%}  
-                  {%if us.id == review.user_id%}
-                  <h4>{{us.dbname}}</h4>
-                  {% endif %}        
-                {% endfor %}
-              <h5>{{ review.review_text }}</h5>
-              <h5>{{ review.Rating }} / 5</h5>
-             
-      {% endfor %}
-    </div>
-  </div>
+
   
   <!-- Footer -->
 <div class="footer">
