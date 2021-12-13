@@ -51,6 +51,7 @@ class addingForm(FlaskForm):
    productQty = IntegerField('productQty', validators=[InputRequired()],)
    productTag = StringField('productTag', validators=[InputRequired(), Length(max=64)])
    productCategory = StringField('productCategory', validators=[InputRequired(), Length(max=64)])
+   
 class supportForm(FlaskForm):
    title = StringField('Title', validators=[InputRequired(), Length(min=4 , max=40)])
    description = StringField('Description', validators=[InputRequired()], widget=TextArea())
