@@ -51,6 +51,7 @@ class addingForm(FlaskForm):
    productQty = IntegerField('productQty', validators=[InputRequired()],)
    productTag = StringField('productTag', validators=[InputRequired(), Length(max=64)])
    productCategory = StringField('productCategory', validators=[InputRequired(), Length(max=64)])
+
 class supportForm(FlaskForm):
    title = StringField('Title', validators=[InputRequired(), Length(min=4 , max=40)])
    description = StringField('Description', validators=[InputRequired()], widget=TextArea())
@@ -256,8 +257,14 @@ def review():
    form = ReviewForm()
    pID = request.args.get('pID')
    pID2 = request.form.get('pID2')
+   customerReviews = ProductReviews.query.filter_by(product_id=pID2).all()
    print(pID2)
    if form.validate_on_submit():
+      for items in customerReviews:
+         if items.user_id == userID:
+            print("NOT VALID")
+            return redirect(url_for('HomePage'))
+      
       print("VALID!!! PRODUCT REVIEW")
       new_review = ProductReviews(product_id = int(pID2), user_id = userID, review_text = str(form.Review.data), Rating = int(form.ReviewRating.data))
       db.session.add(new_review)
@@ -301,7 +308,7 @@ def order():
          
       Cart.query.filter_by(cartUID = testID).delete()
       db.session.commit()
-   return 'Order recived!'
+   return redirect(url_for('HomePage'))
 
 @app.route('/cart', methods=['GET', 'POST'])
 @login_required
@@ -388,6 +395,8 @@ def addProd():
          prod.product_img = form.productImg.data
          prod.product_description = form.productDesc.data
          prod.product_qty = form.productQty.data
+         prod.product_tag = form.productTag.data
+         prod.product_category = form.productCategory.data
          db.session.commit()
          return redirect(url_for('address'))
       else:

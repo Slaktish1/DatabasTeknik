@@ -2,6 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
 Product page
+
 {% endblock %}
 
 {% block styles %}
@@ -9,6 +10,8 @@ Product page
 {% endblock %}
 
 {% block content %}
+{% set totals = namespace(value=0) %}
+{% set tot = namespace(value=0) %}
   <!--- Header -->
   <div class="header">
     <div class="container">
@@ -76,8 +79,13 @@ Product page
                 {% endfor %}
               <h5>{{ review.review_text }}</h5>
               <h5>{{ review.Rating }} / 5</h5>
-             
+              {% set totals.value = totals.value + review.Rating|int %}
+              {% set tot.value = tot.value + 1 %}
+              
       {% endfor %}
+      {%if tot.value > 0%}
+      <h2> THIS PRODUCT HAS A AVRAGE REVIEW OF : {{ totals.value // tot.value }} / 5</h2>
+      {% endif %}
     </div>
   </div>
   
