@@ -67,17 +67,19 @@
       </div>
     <div class="row">
       <div class="col-3">
-        <img src= "static/img/cat_ski.jpg">
+        <a href="{{ url_for('products', cat='Alpine') }}"><img src= "static/img/cat_ski.jpg"></a>
         <p>Alpine</p>
         <!-- Size of images: 1300x1470 -->
       </div>
       <div class="col-3">
-        <img src= "static/img/cat_soccer.jpg">
+        <a href="{{ url_for('products', cat='Sports') }}"><img src= "static/img/cat_soccer.jpg"></a>
+        
         <p>Sports</p>
       </div>
       <div class="col-3">
-        <img src= "static/img/cat_shoes.jpg">
-        <p>Footwear</p>
+        <a href="{{ url_for('products', cat='Clothes') }}"><img src= "static/img/cat_shoes.jpg"></a>
+        
+        <p>Clothes</p>
       </div>
     </div>
   </div>

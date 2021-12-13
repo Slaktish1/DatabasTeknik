@@ -72,6 +72,7 @@ class Product(db.Model):
     product_description = db.Column(db.String(200), index=True)
     product_qty = db.Column(db.Integer, index=True)
     product_tag = db.Column(db.String(64), index = True)
+    product_category = db.Column(db.String(64), index = True)
     
 class ActiveOrder(db.Model):
    oID = db.Column(db.Integer, primary_key=True, unique=True)
@@ -223,9 +224,13 @@ def logout():
    logout_user()
    return redirect(url_for('HomePage'))
 
-@app.route('/products')
+@app.route('/products', methods=['GET', 'POST'])
 def products():
-   products = Product.query.all()
+   catINF = request.args.get('cat')
+   if catINF == 'Sports' or catINF == 'Alpine' or catINF == 'Clothes':
+      products = Product.query.filter_by(product_category=catINF).all()
+   else:
+      products = Product.query.all()
    return render_template("products.html",title="Products",products=products)
 
 @app.route('/product', methods=['GET', 'POST'])
