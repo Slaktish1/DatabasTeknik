@@ -61,7 +61,7 @@ Product page
           <a href="{{ url_for('quick_add',id= prod_id.id ) }}" class="btn">Add to Cart</a>
         </div>
         <div class="userreviews">
-          <p>Hello this is the reviews from other customers!</p>
+          <p>Customer Reviews:</p>
           <div class="reviewcontainer">
             {% for review in customerReviews %}  
                     {% for us in users%}  
