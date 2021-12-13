@@ -235,20 +235,18 @@ def products():
 
 @app.route('/product', methods=['GET', 'POST'])
 def get_product():
+   users = []
+   visited_users = []
    pID = request.args.get('pID')
-   print(type(pID))
    prod_id = Product.query.filter_by(id=int(pID)).first()
-
-   customerReviews = ProductReviews.query.all()
-   print('BIG REVIEWS!!!!!',customerReviews)
-   for review in customerReviews:
-      customerReviews = customerReviews + Product.query.filter_by(id=review.reviewID).all()
-
-   for user in customerReviews:
-      userID = UserInformation.query.filter_by(id=user.user_id).first()
-
-
-   return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty)
+   customerReviews = ProductReviews.query.filter_by(product_id=pID).all()
+   for items in customerReviews:  
+      if items.user_id not in visited_users:
+         users = users + [UserInformation.query.filter_by(id=items.user_id).first()]
+      if items.user_id not in visited_users:
+             visited_users =  visited_users + [items.user_id]
+   print('KOLLLLLLLAAAA', users)
+   return render_template("product_page.html",prod_id=prod_id,product_qty=prod_id.product_qty, customerReviews = customerReviews, users = users )
 
 @app.route('/review', methods=['GET', 'POST'])
 def review():
