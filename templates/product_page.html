@@ -63,11 +63,27 @@ Product page
           <h1>{{ prod_id.product_price }} kr</h1>
           <a href="{{ url_for('quick_add',id= prod_id.id ) }}" class="btn">Add to Cart</a>
         </div>
+        <div class="userreviews">
+          <p>Customer Reviews:</p>
+          <div class="reviewcontainer">
+            {% for review in customerReviews %}  
+                    {% for us in users%}  
+                        {%if us.id == review.user_id%}
+                        <h4>{{us.dbname}}</h4>
+                        {% endif %}        
+                      {% endfor %}
+                    <h5>{{ review.review_text }}</h5>
+                    <h5>{{ review.Rating }} / 5</h5>
+                   
+            {% endfor %}
+          </div>
+        </div>
       </div>
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <div class="userreviews">
     <p>Hello this is the reviews from other customers!</p>
     <div class="reviewcontainer">
@@ -88,6 +104,9 @@ Product page
       {% endif %}
     </div>
   </div>
+=======
+
+>>>>>>> 199be0a5847d21a889acf07df4f04c98d314222d
   
   <!-- Footer -->
 <div class="footer">

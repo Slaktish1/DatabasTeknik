@@ -191,3 +191,8 @@ body{
     order: 1;
   }
 
+
+.reviewcontainer{
+  width: 50%;
+  border-bottom: medium ridge #646464;
+}

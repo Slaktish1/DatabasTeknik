@@ -11,12 +11,16 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from wtforms.widgets import NumberInput, TextArea
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\x13\xb2\xe4E\x0e\x03\x9da\x98\x8dg k\xa5\xa3\n\xf5!H\x08n\xc9\xabl'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:LTU2021@51.38.126.58/maindb'
 Bootstrap(app)
+
+engine = create_engine('mysql://root:LTU2021@51.38.126.58/maindb')
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -52,6 +56,7 @@ class addingForm(FlaskForm):
    productTag = StringField('productTag', validators=[InputRequired(), Length(max=64)])
    productCategory = StringField('productCategory', validators=[InputRequired(), Length(max=64)])
 
+   
 class supportForm(FlaskForm):
    title = StringField('Title', validators=[InputRequired(), Length(min=4 , max=40)])
    description = StringField('Description', validators=[InputRequired()], widget=TextArea())
@@ -288,17 +293,21 @@ def order():
       for item in cartItems:
          QP = Product.query.filter_by(id=item.cartPID).first()
          if QP.product_qty >= item.cartQuantity:
-            if look == 0:    
-               new_order = ActiveOrder(UserID= session['username'], Total = total)
-               db.session.add(new_order)
-               db.session.commit()
-               look = 1
+            if look == 0:  
+               SessionEngine = sessionmaker(engine)
+               with SessionEngine.begin():    
+                  new_order = ActiveOrder(UserID= session['username'], Total = total)
+                  db.session.add(new_order)
+                  db.session.commit()
+                  look = 1
             if look == 1:
-               newQTY = QP.product_qty - item.cartQuantity
-               QP.product_qty = newQTY
-               new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
-               db.session.add(new_prodInOrder)
-               db.session.commit()
+               SessionEngine = sessionmaker(engine)
+               with SessionEngine.begin(): 
+                  newQTY = QP.product_qty - item.cartQuantity
+                  QP.product_qty = newQTY
+                  new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
+                  db.session.add(new_prodInOrder)
+                  db.session.commit()
          elif QP.product_qty == 0:
             flash('The item is out of stock.')
             return redirect(url_for('shoppingCart'))
@@ -401,7 +410,7 @@ def addProd():
          return redirect(url_for('address'))
       else:
          print('Does not exist')
-         new_prod = Product(product_name = form.productName.data, product_price = float(form.productPrice.data), product_img = form.productImg.data, product_description = form.productDesc.data , product_qty = form.productQty.data)
+         new_prod = Product(product_name = form.productName.data, product_price = float(form.productPrice.data), product_img = form.productImg.data, product_description = form.productDesc.data , product_qty = form.productQty.data, product_tag = form.productTag.data, product_category = form.productCategory.data)
          db.session.add(new_prod)
          db.session.commit()
          return redirect(url_for('address'))
@@ -436,6 +445,7 @@ def search():
    prods =  Product.query.all()
    name = [items for items in prods if str(sTerm) in items.product_name]  
    tag = [items for items in prods if str(sTerm) in items.product_tag] 
+   cat = [items for items in prods if str(sTerm) in items.product_cat] 
    new = set(tag) - set(name)
    res1 = name + list(new)
    desc = [items for items in prods if str(sTerm) in items.product_description]
