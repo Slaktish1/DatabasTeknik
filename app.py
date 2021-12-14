@@ -142,6 +142,7 @@ def register():
       new_user = UserInformation(dbuserType = 'customer', dbname=form.username.data, dbEmail=form.email.data, dbPw=hashed_PW)
       db.session.add(new_user)
       db.session.commit()
+      return redirect(url_for('login'))
    return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -172,6 +173,7 @@ def login():
 @app.route('/address', methods=['GET', 'POST'])
 @login_required
 def address():
+   
    form = AccountForm()
    products = []
    quantity = []
@@ -228,6 +230,7 @@ def address():
 @app.route('/logout')
 @login_required
 def logout():
+   session.pop('_flashes', None)
    session.pop("username", None)
    session.pop("cart", None)
    logout_user()
@@ -280,6 +283,7 @@ def review():
 
 @app.route('/order', methods=['GET', 'POST'])
 def order():
+   
    testID = int(session['username'])
    total = request.args.get('Total')
    testUser = UserInformation.query.filter_by(id=testID).first()
@@ -310,10 +314,10 @@ def order():
                   db.session.commit()
          elif QP.product_qty == 0:
             flash('The item is out of stock.')
-            return redirect(url_for('shoppingCart'))
+            return redirect(url_for('address'))
          elif QP.product_qty < item.cartQuantity:
             flash('The specified quantity for the item is not available. Not enough stock.')
-            return redirect(url_for('shoppingCart'))
+            return redirect(url_for('address'))
          
       Cart.query.filter_by(cartUID = testID).delete()
       db.session.commit()
@@ -455,4 +459,5 @@ def search():
 
 @app.route('/')
 def HomePage():
+   session.pop('_flashes', None)
    return render_template('HomePage.html')

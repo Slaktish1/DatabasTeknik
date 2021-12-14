@@ -64,7 +64,7 @@ Product page
           <a href="{{ url_for('quick_add',id= prod_id.id ) }}" class="btn">Add to Cart</a>
         </div>
         <div class="userreviews">
-          <p>Customer Reviews:</p>
+          <p>Hello this is the reviews from other customers!</p>
           <div class="reviewcontainer">
             {% for review in customerReviews %}  
                     {% for us in users%}  
@@ -74,8 +74,13 @@ Product page
                       {% endfor %}
                     <h5>{{ review.review_text }}</h5>
                     <h5>{{ review.Rating }} / 5</h5>
-                   
+                    {% set totals.value = totals.value + review.Rating|int %}
+                    {% set tot.value = tot.value + 1 %}
+                    
             {% endfor %}
+            {%if tot.value > 0%}
+            <h2> THIS PRODUCT HAS A AVRAGE REVIEW OF : {{ totals.value // tot.value }} / 5</h2>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -83,30 +88,7 @@ Product page
     </div>
   </div>
 
-<<<<<<< HEAD
-  <div class="userreviews">
-    <p>Hello this is the reviews from other customers!</p>
-    <div class="reviewcontainer">
-      {% for review in customerReviews %}  
-              {% for us in users%}  
-                  {%if us.id == review.user_id%}
-                  <h4>{{us.dbname}}</h4>
-                  {% endif %}        
-                {% endfor %}
-              <h5>{{ review.review_text }}</h5>
-              <h5>{{ review.Rating }} / 5</h5>
-              {% set totals.value = totals.value + review.Rating|int %}
-              {% set tot.value = tot.value + 1 %}
-              
-      {% endfor %}
-      {%if tot.value > 0%}
-      <h2> THIS PRODUCT HAS A AVRAGE REVIEW OF : {{ totals.value // tot.value }} / 5</h2>
-      {% endif %}
-    </div>
-  </div>
-=======
-
->>>>>>> 199be0a5847d21a889acf07df4f04c98d314222d
+  
   
   <!-- Footer -->
 <div class="footer">
