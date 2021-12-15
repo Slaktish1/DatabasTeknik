@@ -449,7 +449,7 @@ def search():
    prods =  Product.query.all()
    name = [items for items in prods if str(sTerm) in items.product_name]  
    tag = [items for items in prods if str(sTerm) in items.product_tag] 
-   cat = [items for items in prods if str(sTerm) in items.product_cat] 
+   cat = [items for items in prods if str(sTerm) in items.product_category] 
    new = set(tag) - set(name)
    res1 = name + list(new)
    desc = [items for items in prods if str(sTerm) in items.product_description]
