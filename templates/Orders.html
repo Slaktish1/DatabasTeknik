@@ -45,22 +45,19 @@ Login
 <div class="login">
   <div class="regcontainer">
     <h4>Order: {{ oID }}</h4>
-    {% for OL in orders%}  
-        {% for items in prods%}
-            {% if items.id == OL.productID %}
-            <h5>{{ items.product_name }}</h5>
-                <p style="color:black">{{ items.product_price }} kr</p>
-                <a href="{{ url_for('review', pID = items.id) }}" style=color:tomato>Leave a review!</a>
-            {% endif %}
-        {% endfor %}
+    {% for OL in orders %}  
+      <p style="color:black">{{ OL.product_name }}</p>
+      <img src= "static/img/{{ OL.product_img }}" width="150px"></img>
+      <p style="color:black">{{ OL.product_price }} kr</p>
+      <p style="color:black">Amount: {{ OL.Quantity }} </p>
+      <a href="{{ url_for('review', pID = OL.productID) }}" style=color:tomato>Leave a review!</a>
+      <br>
     {% endfor %}
     <h4>Total: {{ Total }} Kr</h4>
   </div>
 </div>
 
-
 <!--- Footer --->
-
 <div class="footer">
   <div class="container">
     <div class="row">

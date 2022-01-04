@@ -7,12 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import send_file
 from wtforms import StringField, PasswordField, BooleanField, EmailField, FloatField, RadioField,TextAreaField
 from wtforms.fields.numeric import IntegerField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, Email, Length, NumberRange
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from wtforms.widgets import NumberInput, TextArea
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session, scoped_session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\x13\xb2\xe4E\x0e\x03\x9da\x98\x8dg k\xa5\xa3\n\xf5!H\x08n\xc9\xabl'
@@ -47,12 +47,12 @@ class shoppingcartForm(FlaskForm):
 
 class addingForm(FlaskForm):
    productName = StringField('productName', validators=[InputRequired(), Length(max=50)])
-   productPrice = IntegerField('productPrice', validators=[InputRequired()], widget=NumberInput(), default=1000)
+   productPrice = IntegerField('productPrice', validators=[InputRequired(), NumberRange(min=0)], widget=NumberInput(), default=1000)
    productImg = StringField('productImg', validators=[InputRequired(), Length(max=50)])
    productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
    productQty = IntegerField('productQty', validators=[InputRequired()], widget=NumberInput(), default=1)
    productDesc = StringField('productDesc', validators=[InputRequired(), Length(max=50)])
-   productQty = IntegerField('productQty', validators=[InputRequired()],)
+   productQty = IntegerField('productQty', validators=[InputRequired(), NumberRange(min=0)],)
    productTag = StringField('productTag', validators=[InputRequired(), Length(max=64)])
    productCategory = StringField('productCategory', validators=[InputRequired(), Length(max=64)])
 
@@ -94,7 +94,10 @@ class prodInOrder(db.Model):
    Orderid = db.Column(db.Integer, primary_key=False,unique=False)
    productID = db.Column(db.Integer, nullable=False)
    Quantity = db.Column(db.Integer, nullable=False)
-   
+   product_img = db.Column(db.String(200), index=True)
+   product_price = db.Column(db.Float, index=True)
+   product_name = db.Column(db.String(64), index = True)
+
 class Cart(db.Model):
    cartUID = db.Column(db.Integer, primary_key=False,unique=False)
    cartPID = db.Column(db.Integer, nullable=False)
@@ -215,9 +218,7 @@ def address():
          print('ADMIN ORDER!!!!!',OrderProd)
          for prod in OrderProd:
             products = products + Product.query.filter_by(id=prod.productID).all()
-         
-         for quan in OrderProd:
-            quantity = quantity + [quan.Quantity]
+            quantity = [prod.Quantity]
             
          if form.validate_on_submit():
             user.dbStreet = form.Street.data
@@ -294,30 +295,36 @@ def order():
       return redirect(url_for('address'))
 
    else:
+      inStock = 0
       for item in cartItems:
-         QP = Product.query.filter_by(id=item.cartPID).first()
-         if QP.product_qty >= item.cartQuantity:
-            if look == 0:  
-               SessionEngine = sessionmaker(engine)
-               with SessionEngine.begin():    
-                  new_order = ActiveOrder(UserID= session['username'], Total = total)
-                  db.session.add(new_order)
-                  db.session.commit()
-                  look = 1
-            if look == 1:
-               SessionEngine = sessionmaker(engine)
-               with SessionEngine.begin(): 
-                  newQTY = QP.product_qty - item.cartQuantity
-                  QP.product_qty = newQTY
-                  new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity)
-                  db.session.add(new_prodInOrder)
-                  db.session.commit()
-         elif QP.product_qty == 0:
-            flash('The item is out of stock.')
-            return redirect(url_for('address'))
-         elif QP.product_qty < item.cartQuantity:
-            flash('The specified quantity for the item is not available. Not enough stock.')
-            return redirect(url_for('address'))
+            QP = Product.query.filter_by(id=item.cartPID).first()
+            if QP.product_qty == 0 or QP.product_qty < item.cartQuantity:
+               inStock += 1
+               flash('One item is out of stock.')
+               return redirect(url_for('address'))
+      if testUser.dbStreet == None or testUser.dbCity == None or testUser.dbCountry == None:
+         flash('Please submit your shipping information!')
+         return redirect(url_for('address'))
+
+      else:
+         for item in cartItems:
+            QP = Product.query.filter_by(id=item.cartPID).first()
+            if QP.product_qty >= item.cartQuantity:
+               if look == 0:  
+                  SessionEngine = sessionmaker(engine)
+                  with SessionEngine.begin():    
+                     new_order = ActiveOrder(UserID= session['username'], Total = total)
+                     db.session.add(new_order)
+                     db.session.commit()
+                     look = 1
+               if look == 1:
+                  SessionEngine = sessionmaker(engine)
+                  with SessionEngine.begin(): 
+                     newQTY = QP.product_qty - item.cartQuantity
+                     QP.product_qty = newQTY
+                     new_prodInOrder = prodInOrder(Orderid = new_order.oID, productID = QP.id, Quantity = item.cartQuantity, product_price = QP.product_price, product_img = QP.product_img, product_name = QP.product_name)
+                     db.session.add(new_prodInOrder)
+                     db.session.commit()
          
       Cart.query.filter_by(cartUID = testID).delete()
       db.session.commit()
@@ -428,8 +435,7 @@ def seeOrders():
    total = ActiveOrder.query.filter_by(oID=oID).first()
    total = total.Total
    print('LOOOOOOKKKKKK',orders)
-   prods =  Product.query.all()
-   return render_template("Orders.html", orders = orders, prods = prods, oID = oID,Total = total)
+   return render_template("Orders.html", orders = orders, oID = oID, Total = total)
 
 @app.route('/support', methods=['GET', 'POST'])
 def support():
