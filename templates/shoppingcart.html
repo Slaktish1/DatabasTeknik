@@ -74,7 +74,7 @@ Login
                       <td colspan="2">Product</td>
                       <td>Price</td>
                       <td>Quantity</td>
-                      <td>Total</td>
+                      <td>Subtotal</td>
                   </tr>
               </thead>
               <tbody>
@@ -106,13 +106,14 @@ Login
                       
                   </tr>
               </tbody>
-          {% endif %}
-          </table>
-        {% endfor %}
+            {% endif %}
+            </table>
+          {% endfor %}
         {% endfor %}
             {% if plen > 0  %}
             <div class="subtotal">
-                <span class="text">Subtotal: </span>
+                <span class="text">Total: </span>
+                <span class="price">{{ '%0.2f' | format(totals | sum) }}</span>
                 <span class="price"> kr</span>
             </div>
             {% endif %}
